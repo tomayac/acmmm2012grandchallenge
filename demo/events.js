@@ -1,6 +1,21 @@
 (function() {
   var GOOGLE_API_KEY = 'AIzaSyC5GxhDFxBHTKCLNMYtYm6o1tiagi65Ufc';
   var EVENTFUL_KEY = 'd9RP52FGRhfSrvwN';
+  var UPCOMING_KEY = 'cce931ba7e';
+  
+  var htmlFactory = {
+    event: function(eventId, title, start, image, source) {
+      return  '<div id="' + eventId + '" class="event">' +
+                '<strong>' + title + '</strong><br/>' +
+                '<span>' + source + '</span><br/>' + 
+                '<time>' + start + '</time><br/>' + 
+                '<img src="' + image + '" />' +
+              '</div>';    
+    },
+    media: function(mediaurl) {
+      return '<br/><img class="event_media" src="' + mediaurl +'" />';
+    }
+  };
   
   var searchButton = document.getElementById('do_search');
   var locationInput = document.getElementById('location_search');
@@ -8,13 +23,17 @@
   var eventsSection = document.getElementById('events');
 
   searchButton.addEventListener('click', function() {
-    console.log('SUBMIT')
+    resetGui();
     var location = locationInput.value;
     if (location) {
       geocode(location);
     }
     return false;
-  }, false);  
+  }, false);
+  
+  function resetGui() {
+    eventsSection.innerHTML = '';
+  }
   
   function geocode(location) {
     var url = 'https://maps.googleapis.com/maps/api/geocode/json';
@@ -41,22 +60,69 @@
       var location = data.results[0];
       var coords = location.geometry.location;
       getPlaces(coords.lat, coords.lng, 'club');
-      getEvents(coords.lat, coords.lng, '', location.formatted_address);
+      getEventfulEvents(coords.lat, coords.lng, '', location.formatted_address);
+      getUpcomingEvents(coords.lat, coords.lng, '', location.formatted_address);
       locationInput.value = location.formatted_address;
-      /*
-      locationSection.innerHTML = 
-          '<strong>' + location.formatted_address + '</strong>' + 
-          '<br/>Latitude: ' +          
-          '<span class="coords">' + coords.lat + '</span>' + 
-          '<br/>Longitude: ' +
-          '<span class="coords">' + coords.lng + '</span>';
-      */    
     } else {
       // TODO: error handling
     }
   }
   
-  function getEvents(lat, long, query, formattedAddress) {
+  function getUpcomingEvents(lat, long, query, formattedAddress) {
+    var url =
+        'http://upcoming.yahooapis.com/services/rest/?method=event.search';
+    var apiKey = '&api_key=' + UPCOMING_KEY;
+    var query = '&search_text=' + encodeURIComponent(query);
+    var location = '&location=' + lat + ',' + long;
+    var format = '&format=json';
+    var limit = '&per_page=10';
+    var date = '&quick_date=this_week';
+    url += apiKey + query + location + format + limit + date;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(data) {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {          
+          var data = JSON.parse(xhr.responseText);                    
+          retrieveUpcomingEventsResults(data, formattedAddress);
+        } else {
+          console.log('Error: Getting Upcoming events for the coordinates failed.');
+        }
+      }
+    }
+    xhr.open('GET', url, true);
+    xhr.send();        
+  }
+  
+  function createRandomId() {
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var possibleLength = possible.length;
+    for (var i = 0; i < 5; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possibleLength));
+    }
+    return text;
+  }
+  
+  function retrieveUpcomingEventsResults(data, formattedAddress) {
+    if (!data.rsp) {
+      return;
+    }
+    var events = data.rsp.event;
+    var html = '';
+    for (var i = 0, len = events.length; i < len; i++) {
+      var e = events[i];
+      var title = e.name;
+      var start = e.start_date + ' ' + e.start_time;
+      var commonLocation = formattedAddress.split(',')[0];
+      var eventId = 'event_' + createRandomId();
+      getMediaItems(title, commonLocation, eventId);
+      var image = e.photo_url;
+      html += htmlFactory.event(eventId, title, start, image, 'Upcoming');
+    }
+    eventsSection.innerHTML += html;
+  }
+  
+  function getEventfulEvents(lat, long, query, formattedAddress) {
     var url = 'http://api.eventful.com/rest/events/search';
     var authentication = '?app_key=' + EVENTFUL_KEY;
     var keywords = '&keywords=' + encodeURIComponent(query);
@@ -72,9 +138,9 @@
     xhr.onreadystatechange = function(data) {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {          
-          retrieveEventsResults(xhr.responseXML, formattedAddress);
+          retrieveEventfulEventsResults(xhr.responseXML, formattedAddress);
         } else {
-          console.log('Error: Getting events for the coordinates failed.');
+          console.log('Error: Getting Eventful events for the coordinates failed.');
         }
       }
     }
@@ -82,7 +148,7 @@
     xhr.send();        
   }
   
-  function retrieveEventsResults(data, formattedAddress) {
+  function retrieveEventfulEventsResults(data, formattedAddress) {
     var events = data.getElementsByTagName('event');
     var html = '';
     for (var i = 0, len = events.length; i < len; i++) {
@@ -90,22 +156,18 @@
       var title = e.getElementsByTagName('title')[0].textContent;
       var start = e.getElementsByTagName('start_time')[0].textContent;
       var commonLocation = formattedAddress.split(',')[0];
-      var eventId = 'event_' + i;
+      var eventId = 'event_' + createRandomId();
       getMediaItems(title, commonLocation, eventId);
+      var image = '';
       try {
-        var image =
+        image =
             e.getElementsByTagName('image')[0].getElementsByTagName('url')[0].textContent;
       } catch(e) {
-        
+        // ToDo: Error handling
       }            
-      html += 
-          '<div id="' + eventId + '" class="event">' +
-            '<strong>' + title + '</strong><br/>' +
-            '<time>' + start + '</time><br/>' + 
-            '<img src="' + image + '" />' +
-          '</div>';
+      html += htmlFactory.event(eventId, title, start, image, 'Eventful');
     }
-    eventsSection.innerHTML = html;
+    eventsSection.innerHTML += html;
   }
   
   function getPlaces(lat, long, query) {    
@@ -162,12 +224,10 @@
     var socialNetworks = Object.keys(data);
     socialNetworks.forEach(function(socialNetwork) {
       var media = data[socialNetwork];
-      media.forEach(function(medium) {
-        if (!medium.type === 'photo') {
-          return;
+      media.forEach(function(mediaItem) {
+        if (mediaItem.type === 'photo') {
+          eventDiv.innerHTML += htmlFactory.media(mediaItem.mediaurl);
         }
-        eventDiv.innerHTML +=
-            '<br/><img class="event_media" src="' + medium.mediaurl +'" />';
       });
     });
   }
