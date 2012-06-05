@@ -1,0 +1,19 @@
+{
+  "name": "NiteOutMag™",
+  "description": "Know Where the Party Is!",
+  "version": "1",
+  "app": {
+    "launch": {
+      "local_path": "index.html"
+    }
+  },
+  "icons": {
+    "16": "icon_16.png",
+    "128": "icon_128.png"
+  },
+  "permissions": [
+    "https://maps.googleapis.com/*",
+    "http://api.eventful.com/*",
+    "http://media.no.de/*"
+  ]
+}
