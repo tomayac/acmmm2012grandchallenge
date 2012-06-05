@@ -6,10 +6,10 @@
   var htmlFactory = {
     event: function(eventId, title, start, image, source) {
       return  '<div id="' + eventId + '" class="event">' +
-                '<strong>' + title + '</strong><br/>' +
-                '<span>' + source + '</span><br/>' + 
-                '<time>' + start + '</time><br/>' + 
-                '<img src="' + image + '" />' +
+                '<strong class="event_title">' + title + '</strong><br/>' +
+                '<span class="event_source">' + source + '</span><br/>' + 
+                '<time class="event_time">' + start + '</time><br/>' + 
+                '<img class="event_tiny_image" src="' + image + '" />' +
               '</div>';    
     },
     media: function(mediaurl) {
@@ -19,11 +19,12 @@
   
   var searchButton = document.getElementById('do_search');
   var locationInput = document.getElementById('location_search');
-  var locationSection = document.getElementById('location_lat_long');
   var eventsSection = document.getElementById('events');
+  
+  var eventTitles = {};
 
   searchButton.addEventListener('click', function() {
-    resetGui();
+    reset();
     var location = locationInput.value;
     if (location) {
       geocode(location);
@@ -31,8 +32,19 @@
     return false;
   }, false);
   
-  function resetGui() {
+  function createRandomId() {
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var possibleLength = possible.length;
+    for (var i = 0; i < 5; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possibleLength));
+    }
+    return text;
+  }
+
+  function reset() {
     eventsSection.innerHTML = '';
+    eventTitles = {};
   }
   
   function geocode(location) {
@@ -92,17 +104,7 @@
     xhr.open('GET', url, true);
     xhr.send();        
   }
-  
-  function createRandomId() {
-    var text = '';
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var possibleLength = possible.length;
-    for (var i = 0; i < 5; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possibleLength));
-    }
-    return text;
-  }
-  
+    
   function retrieveUpcomingEventsResults(data, formattedAddress) {
     if (!data.rsp) {
       return;
@@ -112,6 +114,11 @@
     for (var i = 0, len = events.length; i < len; i++) {
       var e = events[i];
       var title = e.name;
+      var lowerCaseTitle = title.toLowerCase();
+      if (eventTitles[lowerCaseTitle]) {
+        continue;
+      }
+      eventTitles[lowerCaseTitle] = true;
       var start = e.start_date + ' ' + e.start_time;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
@@ -154,6 +161,11 @@
     for (var i = 0, len = events.length; i < len; i++) {
       var e = events[i];
       var title = e.getElementsByTagName('title')[0].textContent;
+      var lowerCaseTitle = title.toLowerCase();
+      if (eventTitles[lowerCaseTitle]) {
+        continue;
+      }
+      eventTitles[lowerCaseTitle] = true;
       var start = e.getElementsByTagName('start_time')[0].textContent;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
@@ -163,7 +175,7 @@
         image =
             e.getElementsByTagName('image')[0].getElementsByTagName('url')[0].textContent;
       } catch(e) {
-        // ToDo: Error handling
+        // TODO: Error handling
       }            
       html += htmlFactory.event(eventId, title, start, image, 'Eventful');
     }
