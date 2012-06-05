@@ -15,6 +15,7 @@
     "https://maps.googleapis.com/*",
     "http://api.eventful.com/*",
     "http://upcoming.yahooapis.com/*",
+    "http://api.teleportd.com/*",
     "http://media.no.de/*"
   ]
 }

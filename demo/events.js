@@ -2,6 +2,7 @@
   var GOOGLE_API_KEY = 'AIzaSyC5GxhDFxBHTKCLNMYtYm6o1tiagi65Ufc';
   var EVENTFUL_KEY = 'd9RP52FGRhfSrvwN';
   var UPCOMING_KEY = 'cce931ba7e';
+  var TELEPORTD_KEY = 'd8b1663cdc10753314d5a9bb77ee58fe';
   
   var htmlFactory = {
     event: function(eventId, title, start, image, source) {
@@ -95,7 +96,7 @@
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {          
           var data = JSON.parse(xhr.responseText);                    
-          retrieveUpcomingEventsResults(data, formattedAddress);
+          retrieveUpcomingEventsResults(data, formattedAddress, lat, long);
         } else {
           console.log('Error: Getting Upcoming events for the coordinates failed.');
         }
@@ -105,7 +106,7 @@
     xhr.send();        
   }
     
-  function retrieveUpcomingEventsResults(data, formattedAddress) {
+  function retrieveUpcomingEventsResults(data, formattedAddress, lat, long) {
     if (!data.rsp) {
       return;
     }
@@ -122,7 +123,7 @@
       var start = e.start_date + ' ' + e.start_time;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
-      getMediaItems(title, commonLocation, eventId);
+      getMediaItems(title, commonLocation, lat, long, eventId);
       var image = e.photo_url;
       html += htmlFactory.event(eventId, title, start, image, 'Upcoming');
     }
@@ -145,7 +146,7 @@
     xhr.onreadystatechange = function(data) {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {          
-          retrieveEventfulEventsResults(xhr.responseXML, formattedAddress);
+          retrieveEventfulEventsResults(xhr.responseXML, formattedAddress, lat, long);
         } else {
           console.log('Error: Getting Eventful events for the coordinates failed.');
         }
@@ -155,7 +156,7 @@
     xhr.send();        
   }
   
-  function retrieveEventfulEventsResults(data, formattedAddress) {
+  function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
     var events = data.getElementsByTagName('event');
     var html = '';
     for (var i = 0, len = events.length; i < len; i++) {
@@ -169,7 +170,7 @@
       var start = e.getElementsByTagName('start_time')[0].textContent;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
-      getMediaItems(title, commonLocation, eventId);
+      getMediaItems(title, commonLocation, lat, long, eventId);
       var image = '';
       try {
         image =
@@ -213,15 +214,23 @@
     }
   }
   
-  function getMediaItems(title, commonLocation, eventId) {
-    var url = 'http://media.no.de/search/combined/';
-    url += encodeURIComponent('"' + title + '" ' + commonLocation);
+  function getMediaItems(title, commonLocation, lat, long, eventId) {
+    getNodeMediaItems(title, commonLocation, eventId);
+    getTeleportdMediaItems(title, lat, long, eventId);
+  }
+
+  function getTeleportdMediaItems(title, lat, long, eventId) {
+    var url = 'http://api.teleportd.com/search';
+    var authentication = '?user_key=' + TELEPORTD_KEY;
+    var location = '&loc=[' + lat + ',' + long + ',5.0,5.0]';
+    var query = '&str=' + encodeURIComponent('"' + title + '"');
+    url += authentication + location + query;
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(data) {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
-          var data = JSON.parse(xhr.responseText);          
-          retrieveMediaItemsResults(data, eventId);
+          var data = JSON.parse(xhr.responseText);
+          retrieveTeleportdMediaItemsResults(data, eventId);
         } else {
           console.log('Error: Getting media items for the query failed.');
         }
@@ -231,7 +240,34 @@
     xhr.send();
   }
   
-  function retrieveMediaItemsResults(data, eventId) {
+  function retrieveTeleportdMediaItemsResults(data, eventId) {
+    var eventDiv = document.getElementById(eventId);
+    data.hits.forEach(function(mediaItem) {
+      if (mediaItem.typ === 'image') {
+        eventDiv.innerHTML += htmlFactory.media(mediaItem.fll);
+      }
+    });
+  }
+  
+  function getNodeMediaItems(title, commonLocation, eventId) {
+    var url = 'http://media.no.de/search/combined/';
+    url += encodeURIComponent('"' + title + '" ' + commonLocation);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(data) {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          var data = JSON.parse(xhr.responseText);          
+          retrieveNodeMediaItemsResults(data, eventId);
+        } else {
+          console.log('Error: Getting media items for the query failed.');
+        }
+      }
+    }
+    xhr.open('GET', url, true);
+    xhr.send();
+  }
+  
+  function retrieveNodeMediaItemsResults(data, eventId) {
     var eventDiv = document.getElementById(eventId);
     var socialNetworks = Object.keys(data);
     socialNetworks.forEach(function(socialNetwork) {
