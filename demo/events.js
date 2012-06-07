@@ -18,14 +18,17 @@
               '</div>';    
     },
     // the individual images that illustrate an event 
-    media: function(mediaurl) {
+    media: function(mediaurl, description, storyurl) {
       // elegant: if the image returns an error (like 404 or 403), it
       // automagically removes itself from the DOM rather than showing a "broken
       // image" icon
-      return '<br/>' + 
-             '<img class="event_media" ' + 
-             'onerror="javascript:this.parentNode.removeChild(this);" ' + 
-             'src="' + mediaurl +'" />';
+        return '<br/>' + 
+               (storyurl? '<a href="' + storyurl + '">' : '') + 
+               '<img class="event_media" ' + 
+               'onerror="javascript:this.parentNode.removeChild(this);" ' + 
+               'src="' + mediaurl +'" '+
+               'longdesc="' + description + '" />' + 
+               (storyurl? '</a>' : '');
     }
   };
   
@@ -35,9 +38,12 @@
   var eventsSection = document.getElementById('events');
   var spinnerImage =  document.getElementById('spinner');
   
-  // needed to store existing events when working with multiple event sources
+  // used to store existing events when working with multiple event sources
   // in order to avoid event duplication
   var eventTitles = {};
+  
+  // used to store the URLs of the media items for an event
+  var eventMediaItems = {};
 
   // add logic to the search button
   searchButton.addEventListener('click', function() {
@@ -67,6 +73,7 @@
   function reset() {
     eventsSection.innerHTML = '';
     eventTitles = {};
+    eventMediaItems = {};
   }
   
   // gets the lat/long pair and sanitized location name for a location query
@@ -115,8 +122,8 @@
     // remove punctuation and weird characters
     title = title.replace(
         /[\.,\-\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>]/g, '');
-    // replace characters that can stand for "and" by space
-    title = title.replace(/[&\+]/g, ' ');
+    // replace characters that can stand for "and" or "at" by space
+    title = title.replace(/[&\+@]/g, ' ');
     return title
   }
   
@@ -174,6 +181,9 @@
       var start = e.start_date + ' ' + e.start_time;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
+      if (!eventMediaItems[eventId]) {
+        eventMediaItems[eventId] = {};
+      }
       var image = e.photo_url;
       var eventHtml =
           htmlFactory.event(eventId, title, start, image, 'Upcoming');
@@ -222,6 +232,9 @@
       var start = e.getElementsByTagName('start_time')[0].textContent;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
+      if (!eventMediaItems[eventId]) {
+        eventMediaItems[eventId] = {};
+      }      
       var imageSrc = '';
       try {
         var image = e.getElementsByTagName('image')[0];
@@ -301,11 +314,15 @@
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits.length) {
+      if (!document.getElementById(eventId)) {
+        eventsSection.innerHTML += eventHtml;
+      }
       var eventDiv = document.getElementById(eventId);
       var html = '';
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
-          html += htmlFactory.media(mediaItem.fll);
+          // TODO: check if there is a way to get the description and story URL
+          html += htmlFactory.media(mediaItem.fll, null, null);
         }
       });
       eventDiv.innerHTML += html;
@@ -316,7 +333,7 @@
   // title and sanitized location name
   function getNodeMediaItems(title, commonLocation, eventId, eventHtml) {
     var url = 'http://media.no.de/search/combined/';
-    url += encodeURIComponent(title + '" ' + commonLocation);
+    url += encodeURIComponent(title + ' ' + commonLocation);
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(data) {
       if (xhr.readyState == 4) {
@@ -334,7 +351,7 @@
   
   // retrieves media items from our node.js Media Server
   function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
-    var socialNetworks = Object.keys(data);    
+    var socialNetworks = Object.keys(data);
     // check if we have events at all, a bit ugly, but works
     var eventsExist = false;
     for (var i = 0, len = socialNetworks.length; i < len; i++) {
@@ -344,20 +361,34 @@
         break;
       }      
     }
-    if (eventsExist) {      
-      eventsSection.innerHTML += eventHtml;
+    if (eventsExist) {
+      if (!document.getElementById(eventId)) {
+        eventsSection.innerHTML += eventHtml;
+      }
       var eventDiv = document.getElementById(eventId);      
       var html = '';
       socialNetworks.forEach(function(socialNetwork) {
         var media = data[socialNetwork];
         media.forEach(function(mediaItem) {
           if (mediaItem.type === 'photo') {
-            html += htmlFactory.media(mediaItem.mediaurl);
+            var url = mediaItem.mediaurl;
+            if (!eventMediaItems[eventId][url]) {              
+              html += htmlFactory.media(
+                  mediaItem.mediaurl,
+                  mediaItem.message.clean,
+                  mediaItem.storyurl);
+              eventMediaItems[eventId][url] = true;
+            }
           }
         });
       });      
       eventDiv.innerHTML += html;
     }    
+  }
+  
+  // TODO: deduplicate media items
+  function deduplicteMediaItems() {
+    
   }
   
 })();
