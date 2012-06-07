@@ -10,10 +10,11 @@
   var htmlFactory = {
     // the container for an event
     event: function(eventId, title, start, image, source) {
+      var ago = prettyDate(start);
       return  '<div id="' + eventId + '" class="event">' +
                 '<strong class="event_title">' + title + '</strong><br/>' +
                 '<span class="event_source">' + source + '</span><br/>' + 
-                '<time class="event_time">' + start + '</time><br/>' + 
+                '<span class="event_time">' + ago + '</span><br/>' + 
                 '<img class="event_tiny_image" src="' + image + '" />' +
               '</div>';    
     },
@@ -22,12 +23,11 @@
       // elegant: if the image returns an error (like 404 or 403), it
       // automagically removes itself from the DOM rather than showing a "broken
       // image" icon
-        return '<br/>' + 
-               (storyurl? '<a href="' + storyurl + '">' : '') + 
+        return (storyurl? '<a href="' + storyurl + '">' : '') + 
                '<img class="event_media" ' + 
                'onerror="javascript:this.parentNode.removeChild(this);" ' + 
                'src="' + mediaurl +'" '+
-               'longdesc="' + description + '" />' + 
+               'title="' + description + '" />' + 
                (storyurl? '</a>' : '');
     }
   };
@@ -236,12 +236,14 @@
         eventMediaItems[eventId] = {};
       }      
       var imageSrc = '';
-      try {
+      if ((e.getElementsByTagName('image')) &&
+          (e.getElementsByTagName('image').length > 0)) {
         var image = e.getElementsByTagName('image')[0];
-        imageSrc = image.getElementsByTagName('url')[0].textContent;
-      } catch(e) {
-        // TODO: Error handling
-      }            
+        if ((image.getElementsByTagName('url')) &&
+            (image.getElementsByTagName('url').length > 0)) {
+          imageSrc = image.getElementsByTagName('url')[0].textContent;
+        }
+      }
       var eventHtml =
           htmlFactory.event(eventId, title, start, imageSrc, 'Eventful');
       getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
@@ -322,7 +324,7 @@
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
           // TODO: check if there is a way to get the description and story URL
-          html += htmlFactory.media(mediaItem.fll, null, null);
+          html += htmlFactory.media(mediaItem.fll, '', '');
         }
       });
       eventDiv.innerHTML += html;
