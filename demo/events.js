@@ -22,7 +22,7 @@
                 '<img class="event_tiny_image" src="' + image + '" />' +
               '</div>';    
     },
-    // the individual images that illustrate an event 
+    // the individual images that illustrate an event
     media: function(mediaurl, description, storyurl) {
       // elegant: if the image returns an error (like 404 or 403), it
       // automagically removes itself from the DOM rather than showing a "broken
@@ -39,7 +39,7 @@
   // get DOM access to the page elements
   var searchButton = document.getElementById('do_search');
   var locationInput = document.getElementById('location_search');
-  var eventsSection = document.getElementById('events');
+  var eventsFlipbook = document.getElementById('flipbook');  
   var spinnerImage =  document.getElementById('spinner');
   
   // used to store existing events when working with multiple event sources
@@ -48,11 +48,24 @@
   
   // used to store the URLs of the media items for an event
   var eventMediaItems = {};
-
+  
+  // used to track pending Ajax requests
+  var pendingAjaxRequests = 0;
+  function requestSent(requestId) {
+    pendingAjaxRequests += 1;
+  }
+  function requestReceived(requestId) {
+    pendingAjaxRequests -= 1;
+    if (pendingAjaxRequests === 0) {
+      spinnerImage.style.display = 'none';
+    } else {
+      spinnerImage.style.display = 'inline';      
+    }
+  }
+  
   // add logic to the search button
   searchButton.addEventListener('click', function() {
     reset();
-    spinnerImage.style.display = 'inline';
     searchButton.style.display = 'none';
     var location = locationInput.value;
     if (location) {
@@ -61,6 +74,45 @@
     return false;
   }, false);
   
+  // creates the flipbook
+  function makeFlipbook() {
+    var flipbook = $('#flipbook');
+    flipbook.turn({
+      display: 'double',
+      duration: 1000,
+      acceleration: true,
+      gradients: true,
+      width: '1000px',
+      height: '600px'
+    });
+    var pages = flipbook.turn('pages');
+    for (var i = 0; i < pages; i++) {
+      flipbook.turn('removePage', i);
+    }
+    // react on left/right arrows
+    $(window).bind('keydown', function(e) {
+      if (e.keyCode === 37) {
+        flipbook.turn('previous');
+      } else if (e.keyCode === 39) {
+        flipbook.turn('next');
+      }
+    });
+    flipbook.turn({
+      when: {
+        turn: function(e, page, view) {
+          var eventId = eventMediaHtml[page];
+          console.log('event ID ' + eventId);
+          console.log('page ' + page);
+          console.log('view ' + view);
+          view.innerHTML = eventMediaHtml[eventId];
+        }
+      }
+    });
+  } 
+  
+  // needed to store HTML for each event
+  var eventMediaHtml = {};    
+    
   // helper function needed to create unique IDs
   function createRandomId() {
     var text = '';
@@ -75,9 +127,12 @@
 
   // resets the GUI and central variables
   function reset() {
-    eventsSection.innerHTML = '';
     eventTitles = {};
     eventMediaItems = {};
+    pendingAjaxRequests = 0;
+    // initialize the flipbook
+    eventMediaHtml = {};
+    makeFlipbook();
   }
   
   // gets the lat/long pair and sanitized location name for a location query
@@ -89,6 +144,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
           retrieveGeocodeResults(data);
@@ -98,13 +154,13 @@
       }
     }
     xhr.open('GET', url, true);
-    xhr.send();    
+    xhr.send();
+    requestSent();
   }
   
   // retrieves lat/long pair and sanitized location name for a location query
   // gets events for a lat/long pair from different event sources
   function retrieveGeocodeResults(data) {
-    spinnerImage.style.display = 'none';
     searchButton.style.display = 'inline';
     
     if (data.results && data.results.length > 0) {
@@ -167,7 +223,8 @@
     url += ll + intent + radius + auth1 + auth2 + v + limit + category;
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
+      if (xhr.readyState == 4) {        
+        requestReceived();
         if (xhr.status == 200) {          
           var data = JSON.parse(xhr.responseText);                    
           retrieveFoursquareEventsResults(data, formattedAddress, lat, long);
@@ -178,6 +235,7 @@
     }
     xhr.open('GET', url, true);
     xhr.send();
+    requestSent();    
   }
   
   // retrieves events from Foursquare
@@ -197,6 +255,7 @@
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
+          requestReceived();
           if (xhr.status == 200) {
             var json = JSON.parse(xhr.responseText);
             if (!json.response.events) {
@@ -217,8 +276,11 @@
               }              
               var eventHtml =
                   htmlFactory.event(eventId, title, start, '', 'Foursquare');
+              // use the exacter event venue location
               getMediaItems(title, commonLocation, venue.location.lat,
                   venue.location.long, eventId, eventHtml);
+              // use the less exact search location
+              getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);                  
             }
           } else {
             console.log('Error: Getting Foursqaure events for the coordinates failed.');
@@ -227,6 +289,7 @@
       }
       xhr.open('GET', eventUrl, true);
       xhr.send();      
+      requestSent();      
     });
   }
   
@@ -244,6 +307,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {          
           var data = JSON.parse(xhr.responseText);                    
           retrieveUpcomingEventsResults(data, formattedAddress, lat, long);
@@ -254,6 +318,7 @@
     }
     xhr.open('GET', url, true);
     xhr.send();        
+    requestSent();    
   }
     
   // retrieves events from Upcoming
@@ -277,8 +342,11 @@
       var image = e.photo_url;
       var eventHtml =
           htmlFactory.event(eventId, title, start, image, 'Upcoming');
+      // use the exacter event venue location
       getMediaItems(title, commonLocation, e.latitude, e.longitude, eventId,
           eventHtml);
+      // use the less exact search location
+      getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
     }
   }
   
@@ -298,6 +366,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {          
           retrieveEventfulEventsResults(
               xhr.responseXML, formattedAddress, lat, long);
@@ -308,6 +377,7 @@
     }
     xhr.open('GET', url, true);
     xhr.send();        
+    requestSent();    
   }
   
   // retrieves events from Eventful
@@ -339,8 +409,13 @@
       }
       var eventHtml =
           htmlFactory.event(eventId, title, start, imageSrc, 'Eventful');
+      // use the exacter event venue location
       getMediaItems(title, commonLocation, latitude, longitude, eventId,
           eventHtml);
+      // use the less exact search location
+      getMediaItems(title, commonLocation, lat, long, eventId,
+          eventHtml);
+          
     }
   }
   
@@ -356,6 +431,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
           retrievePlacesResults(data);
@@ -366,13 +442,14 @@
     }
     xhr.open('GET', url, true);
     xhr.send();
+    requestSent();    
   }
   
   // retrieves (places and) events from Google Places
   function retrievePlacesResults(data) {
     if (data.results && data.results.length > 0) {    
       // TODO: check for events
-      // event data for places seems very sparse      
+      // event data for places seems very sparse
     } else {
       // TODO: error handling
     }
@@ -395,6 +472,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);
           retrieveTeleportdMediaItemsResults(data, eventId, eventHtml);
@@ -405,23 +483,30 @@
     }
     xhr.open('GET', url, true);
     xhr.send();
+    requestSent();    
   }
   
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
-      if (!document.getElementById(eventId)) {
-        eventsSection.innerHTML += eventHtml;
+      if (typeof eventMediaHtml[eventId] === 'undefined') {
+        var page = $(eventHtml);
+        var flipbook = $('#flipbook');
+        flipbook.turn('addPage', page);
+        eventMediaHtml[eventId] = '';
+        eventMediaHtml[flipbook.turn('pages')] = eventId;
       }
-      var eventDiv = document.getElementById(eventId);
       var html = '';
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
           // TODO: check if there is a way to get the description and story URL
-          html += htmlFactory.media(mediaItem.fll, '', '');
+          if (!eventMediaItems[eventId][mediaItem.fll]) {
+            html += htmlFactory.media(mediaItem.fll, '', '');
+            eventMediaItems[eventId][mediaItem.fll] = true;
+          }
         }
-      });
-      eventDiv.innerHTML += html;
+      });   
+      eventMediaHtml[eventId] += html;
     }
   }
   
@@ -433,6 +518,7 @@
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
+        requestReceived();
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
           retrieveNodeMediaItemsResults(data, eventId, eventHtml);
@@ -443,6 +529,7 @@
     }
     xhr.open('GET', url, true);
     xhr.send();
+    requestSent();
   }
   
   // retrieves media items from our node.js Media Server
@@ -458,17 +545,19 @@
       }      
     }
     if (eventsExist) {
-      if (!document.getElementById(eventId)) {
-        eventsSection.innerHTML += eventHtml;
+      if (typeof eventMediaHtml[eventId] === 'undefined') {
+        var page = $(eventHtml);
+        var flipbook = $('#flipbook');
+        flipbook.turn('addPage', page);
+        eventMediaHtml[eventId] = '';
+        eventMediaHtml[flipbook.turn('pages')] = eventId;
       }
-      var eventDiv = document.getElementById(eventId);      
       var html = '';
       socialNetworks.forEach(function(socialNetwork) {
         var media = data[socialNetwork];
         media.forEach(function(mediaItem) {
           if (mediaItem.type === 'photo') {
-            var url = mediaItem.mediaurl;
-            if ((!eventMediaItems[eventId][url]) &&
+            if ((!eventMediaItems[eventId][mediaItem.mediaurl]) &&
                 // TODO: very lame way to remove spammy messages with just too
                 // much characters
                 (mediaItem.message.clean.length <= 500)) {
@@ -476,18 +565,18 @@
                   mediaItem.mediaurl,
                   mediaItem.message.clean,
                   mediaItem.storyurl);
-              eventMediaItems[eventId][url] = true;
+              eventMediaItems[eventId][mediaItem.mediaurl] = true;
             }
           }
         });
       });      
-      eventDiv.innerHTML += html;
-    }    
+      eventMediaHtml[eventId] += html;
+    }
   }
   
   // TODO: deduplicate media items
   function deduplicteMediaItems() {
     
-  }
+  } 
   
 })();
