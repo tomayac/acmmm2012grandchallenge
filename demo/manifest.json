@@ -16,6 +16,7 @@
     "http://api.eventful.com/*",
     "http://upcoming.yahooapis.com/*",
     "http://api.teleportd.com/*",
+    "https://api.foursquare.com/*",
     "http://media.no.de/*"
   ]
 }

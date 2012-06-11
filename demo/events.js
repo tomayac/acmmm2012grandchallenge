@@ -5,12 +5,16 @@
   var EVENTFUL_KEY = 'd9RP52FGRhfSrvwN';
   var UPCOMING_KEY = 'cce931ba7e';
   var TELEPORTD_KEY = 'd8b1663cdc10753314d5a9bb77ee58fe';
+  var FOURSQUARE_KEY = {
+    clientId: 'DQI0ZMEUX0PWZZ3WXCKIZLVK1JSPMCJITAASGBIICHJZ0DY5',
+    clientSecret: 'Q11RIEPAZ2VXQLYWSHZ1GRJHM3QR43HCSS42TH51H0YDVTTL'    
+  };
   
   // this objects serves as a central "templating engine" for all generated HTML
   var htmlFactory = {
     // the container for an event
     event: function(eventId, title, start, image, source) {
-      var ago = prettyDate(start);
+      var ago = humaneDate(start);
       return  '<div id="' + eventId + '" class="event">' +
                 '<strong class="event_title">' + title + '</strong><br/>' +
                 '<span class="event_source">' + source + '</span><br/>' + 
@@ -83,7 +87,7 @@
     var address = '&address=' + encodeURIComponent(location);
     url += sensor + address;
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
@@ -107,6 +111,7 @@
       var location = data.results[0];
       var coords = location.geometry.location;
       getPlaces(coords.lat, coords.lng, '');
+      getFoursquareEvents(coords.lat, coords.lng, '', location.formatted_address);
       getEventfulEvents(coords.lat, coords.lng, '', location.formatted_address);
       getUpcomingEvents(coords.lat, coords.lng, '', location.formatted_address);
       locationInput.value = location.formatted_address;
@@ -140,6 +145,91 @@
     return false;
   }
   
+  // gets events from Foursquare
+  function getFoursquareEvents(lat, long, query, formattedAddress) {
+    var url = 'https://api.foursquare.com/v2/venues/search';
+    var ll = '?ll=' + lat + ',' + long;
+    var intent = '&intent=browse';
+    var radius = '&radius=5000';
+    var auth1 = '&client_id=' + FOURSQUARE_KEY.clientId;
+    var auth2 = '&client_secret=' + FOURSQUARE_KEY.clientSecret;
+    var limit = '&limit=10';
+    var now = new Date();    
+    var v = '&v=' + now.getUTCFullYear() +
+        (now.getUTCMonth() < 10? '0' + now.getUTCMonth() : now.getUTCMonth()) +
+        (now.getUTCDate() < 10? '0' + now.getUTCDate() : now.getUTCDate());
+    // see https://api.foursquare.com/v2/venues/categories? ↵
+    // oauth_token=G2FJGXXRYBY2WBQEGQFT0FPAXXDT3ANN5S2JCDX0DR2GRIOT&v=20120611
+    // nightlife: 4d4b7105d754a06376d81259
+    // arts & entertainment: 4d4b7104d754a06370d81259
+    var category =
+        '&categoryId=4d4b7105d754a06376d81259,4d4b7104d754a06370d81259';
+    url += ll + intent + radius + auth1 + auth2 + v + limit + category;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {          
+          var data = JSON.parse(xhr.responseText);                    
+          retrieveFoursquareEventsResults(data, formattedAddress, lat, long);
+        } else {
+          console.log('Error: Getting Foursquare events for the coordinates failed.');
+        }
+      }
+    }
+    xhr.open('GET', url, true);
+    xhr.send();
+  }
+  
+  // retrieves events from Foursquare
+  function retrieveFoursquareEventsResults(data, formattedAddress, lat, long) {
+    if (!data.response.venues) {
+      return;
+    }
+    var url = 'https://api.foursquare.com/v2/venues/';
+    var auth1 = '?client_id=' + FOURSQUARE_KEY.clientId;
+    var auth2 = '&client_secret=' + FOURSQUARE_KEY.clientSecret;
+    var now = new Date();
+    var v = '&v=' + now.getUTCFullYear() +
+        (now.getUTCMonth() < 10? '0' + now.getUTCMonth() : now.getUTCMonth()) +
+        (now.getUTCDate() < 10? '0' + now.getUTCDate() : now.getUTCDate());    
+    data.response.venues.forEach(function(venue) {
+      var eventUrl = url + venue.id + '/events' + auth1 + auth2 + v;
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+          if (xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            if (!json.response.events) {
+              return;
+            }
+            var events = json.response.events.items;
+            for (var i = 0, len = events.length; i < len; i++) {
+              var e = events[i];
+              var title = sanitizeEventTitle(e.name);
+              if (eventWithSimilarTitleExists(title)) {
+                continue;
+              }
+              var start = new Date(e.date * 1000);
+              var commonLocation = formattedAddress.split(',')[0];
+              var eventId = 'event_' + createRandomId();
+              if (!eventMediaItems[eventId]) {
+                eventMediaItems[eventId] = {};
+              }              
+              var eventHtml =
+                  htmlFactory.event(eventId, title, start, '', 'Foursquare');
+              getMediaItems(title, commonLocation, venue.location.lat,
+                  venue.location.long, eventId, eventHtml);
+            }
+          } else {
+            console.log('Error: Getting Foursqaure events for the coordinates failed.');
+          }
+        }
+      }
+      xhr.open('GET', eventUrl, true);
+      xhr.send();      
+    });
+  }
+  
   // gets events from Upcoming
   function getUpcomingEvents(lat, long, query, formattedAddress) {
     var url =
@@ -152,7 +242,7 @@
     var date = '&quick_date=this_week';
     url += apiKey + query + location + format + limit + date;
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {          
           var data = JSON.parse(xhr.responseText);                    
@@ -187,7 +277,8 @@
       var image = e.photo_url;
       var eventHtml =
           htmlFactory.event(eventId, title, start, image, 'Upcoming');
-      getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
+      getMediaItems(title, commonLocation, e.latitude, e.longitude, eventId,
+          eventHtml);
     }
   }
   
@@ -199,13 +290,13 @@
     var location = '&location=' + lat + ',' + long;
     var category = '&category=music,festivals_parades,singles_social';
     var date = '&date=Last+Week';
-    var within = '&within=1';
+    var within = '&within=10';
     var units = '&units=km';
     var mature = '&mature=all';
     url += authentication + keywords + location + category + date + within +
         units + mature;
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {          
           retrieveEventfulEventsResults(
@@ -230,6 +321,8 @@
         continue;
       }
       var start = e.getElementsByTagName('start_time')[0].textContent;
+      var latitude = e.getElementsByTagName('latitude')[0].textContent;
+      var longitude = e.getElementsByTagName('longitude')[0].textContent;
       var commonLocation = formattedAddress.split(',')[0];
       var eventId = 'event_' + createRandomId();
       if (!eventMediaItems[eventId]) {
@@ -246,7 +339,8 @@
       }
       var eventHtml =
           htmlFactory.event(eventId, title, start, imageSrc, 'Eventful');
-      getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
+      getMediaItems(title, commonLocation, latitude, longitude, eventId,
+          eventHtml);
     }
   }
   
@@ -260,7 +354,7 @@
     var key = '&key=' + GOOGLE_API_KEY;
     url += radius + sensor + location + keyword + key;
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
@@ -299,7 +393,7 @@
     var query = '&str=' + encodeURIComponent(title);
     url += authentication + location + query;
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);
@@ -315,7 +409,7 @@
   
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
-    if (data.hits.length) {
+    if (data.hits && data.hits.length) {
       if (!document.getElementById(eventId)) {
         eventsSection.innerHTML += eventHtml;
       }
@@ -337,7 +431,7 @@
     var url = 'http://media.no.de/search/combined/';
     url += encodeURIComponent(title + ' ' + commonLocation);
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function(data) {
+    xhr.onreadystatechange = function() {
       if (xhr.readyState == 4) {
         if (xhr.status == 200) {
           var data = JSON.parse(xhr.responseText);          
@@ -374,7 +468,10 @@
         media.forEach(function(mediaItem) {
           if (mediaItem.type === 'photo') {
             var url = mediaItem.mediaurl;
-            if (!eventMediaItems[eventId][url]) {              
+            if ((!eventMediaItems[eventId][url]) &&
+                // TODO: very lame way to remove spammy messages with just too
+                // much characters
+                (mediaItem.message.clean.length <= 500)) {
               html += htmlFactory.media(
                   mediaItem.mediaurl,
                   mediaItem.message.clean,
