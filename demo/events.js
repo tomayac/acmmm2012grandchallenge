@@ -489,15 +489,21 @@
   
   // adds a new page to the flipbook and returns it
   function addPage(pageHtml) {
-    var page = $('<div>').html(pageHtml);
+    var page = $('<div class="page">')
+                  .append($('<div class="content">').html(pageHtml));
     $('#flipbook').turn('addPage', page);
     return page;
+  }
+  
+  function addPageContent(page, contentHtml) {
+    var content = page.find('.content');
+    content.html(content.html() + contentHtml);
   }
   
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
-      var html = eventPages[eventId].html();
+      var html = '';
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
           // TODO: check if there is a way to get the description and story URL
@@ -507,7 +513,7 @@
           }
         }
       });   
-      eventPages[eventId].html(html);
+      addPageContent(eventPages[eventId], html);
     }
   }
   
@@ -546,7 +552,7 @@
       }      
     }
     if (mediaExist) {
-      var html = eventPages[eventId].html();
+      var html = '';
       socialNetworks.forEach(function(socialNetwork) {
         var media = data[socialNetwork];
         media.forEach(function(mediaItem) {
@@ -564,7 +570,7 @@
           }
         });
       });      
-      eventPages[eventId].html(html);
+      addPageContent(eventPages[eventId], html);
     }
     // no media exist
     else {
