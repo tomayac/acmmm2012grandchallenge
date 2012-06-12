@@ -274,6 +274,7 @@
               }              
               var eventHtml =
                   htmlFactory.event(eventId, title, start, '', 'Foursquare');
+              eventPages[eventId] = addPage(eventHtml);
               // use the exacter event venue location
               getMediaItems(title, commonLocation, venue.location.lat,
                   venue.location.long, eventId, eventHtml);
@@ -340,6 +341,7 @@
       var image = e.photo_url;
       var eventHtml =
           htmlFactory.event(eventId, title, start, image, 'Upcoming');
+      eventPages[eventId] = addPage(eventHtml);
       // use the exacter event venue location
       getMediaItems(title, commonLocation, e.latitude, e.longitude, eventId,
           eventHtml);
@@ -407,6 +409,7 @@
       }
       var eventHtml =
           htmlFactory.event(eventId, title, start, imageSrc, 'Eventful');
+      eventPages[eventId] = addPage(eventHtml);
       // use the exacter event venue location
       getMediaItems(title, commonLocation, latitude, longitude, eventId,
           eventHtml);
@@ -494,10 +497,6 @@
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
-      var flipbook = $('#flipbook');        
-      if (!eventPages[eventId]) {
-        eventPages[eventId] = addPage(eventHtml);
-      }
       var html = eventPages[eventId].html();
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
@@ -522,7 +521,7 @@
       if (xhr.readyState == 4) {
         requestReceived();
         if (xhr.status == 200) {
-          var data = JSON.parse(xhr.responseText);          
+          var data = JSON.parse(xhr.responseText);
           retrieveNodeMediaItemsResults(data, eventId, eventHtml);
         } else {
           console.log('Error: Getting media items for the query failed.');
@@ -537,20 +536,16 @@
   // retrieves media items from our node.js Media Server
   function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
     var socialNetworks = Object.keys(data);
-    // check if we have events at all, a bit ugly, but works
-    var eventsExist = false;
+    // check if we have media at all, a bit ugly, but works
+    var mediaExist = false;
     for (var i = 0, len = socialNetworks.length; i < len; i++) {
       var media = data[socialNetworks[i]];
       if (media.length) {
-        eventsExist = true;
+        mediaExist = true;
         break;
       }      
     }
-    if (eventsExist) {
-      var flipbook = $('#flipbook');
-      if (!eventPages[eventId]) {
-        eventPages[eventId] = addPage(eventHtml);
-      }
+    if (mediaExist) {
       var html = eventPages[eventId].html();
       socialNetworks.forEach(function(socialNetwork) {
         var media = data[socialNetwork];
@@ -570,6 +565,27 @@
         });
       });      
       eventPages[eventId].html(html);
+    }
+    // no media exist
+    else {
+      // ugly hack: getMediaItems gets called two times,
+      // so only delete the second time we get no media
+      var page = eventPages[eventId];
+      times = page.data('noMediaExistTimes') || 0;
+      times++;
+      page.data('noMediaExistTimes', times);
+      
+      // remove the page from the flipbook
+      if(times == 2) {
+        // find the right pagenumber by looping through all pages (sigh…)
+        var pages = $('#flipbook').data('pageObjs');
+        for(var pageNumber in pages) {
+          if(pages[pageNumber][0] === page[0]) {
+            $('#flipbook').turn('removePage', pageNumber);
+            break;
+          }
+        }
+      }
     }
   }
   
