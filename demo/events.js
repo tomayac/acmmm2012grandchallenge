@@ -597,7 +597,7 @@
       // ugly hack: getMediaItems gets called two times,
       // so only delete the second time we get no media
       var page = eventPages[eventId];
-      times = page.data('noMediaExistTimes') || 0;
+      var times = page.data('noMediaExistTimes') || 0;
       times++;
       page.data('noMediaExistTimes', times);
       
