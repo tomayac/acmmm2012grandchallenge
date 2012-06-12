@@ -510,7 +510,7 @@
   
   function setTitlePage(location) {
     $.getJSON('https://ajax.googleapis.com/ajax/services/search/images?v=1.0',
-              { imgtype: 'photo', imgsz: 'xxlarge', q: location })
+              { imgtype: 'photo', imgsz: 'xxlarge', q: location + ' nightlife' })
       .done(function (data) {
         var image = data.responseData.results[0].url;
         $('.titlepage img.background').attr('src', image);
