@@ -93,7 +93,7 @@
     flipbook.turn({
       display: 'double',
       duration: 1000,
-      acceleration: true,
+      acceleration: false,
       gradients: true,
       elevation: 0
     });
