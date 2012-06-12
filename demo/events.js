@@ -79,6 +79,7 @@
     var location = locationInput.value;
     if (location) {
       geocode(location);
+      setTitlePage(location);
     }
     return false;
   }, false);
@@ -505,6 +506,15 @@
       page.data().background = imageUrl;
       page.prepend($('<img class="background">').attr('src', imageUrl));
     }
+  }
+  
+  function setTitlePage(location) {
+    $.getJSON('https://ajax.googleapis.com/ajax/services/search/images?v=1.0',
+              { imgtype: 'photo', imgsz: 'xxlarge', q: location })
+      .done(function (data) {
+        var image = data.responseData.results[0].url;
+        $('.titlepage img.background').attr('src', image);
+      });
   }
   
   // retrieves media items from Teleportd

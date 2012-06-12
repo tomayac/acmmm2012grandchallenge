@@ -17,6 +17,7 @@
     "http://upcoming.yahooapis.com/*",
     "http://api.teleportd.com/*",
     "https://api.foursquare.com/*",
-    "http://media.no.de/*"
+    "http://media.no.de/*",
+    "https://ajax.googleapis.com/*"
   ]
 }
