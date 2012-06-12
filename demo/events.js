@@ -514,6 +514,8 @@
       .done(function (data) {
         var image = data.responseData.results[0].url;
         $('.titlepage img.background').attr('src', image);
+        $('.mag_city').text(location);
+        $('.controls').fadeOut();
       });
   }
   
