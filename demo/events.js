@@ -15,9 +15,9 @@
     // the container for an event
     event: function(eventId, title, start, image, source) {
       var ago = humaneDate(start);
-      return  '<strong class="event_title">' + title + '</strong><br/>' +
-              '<span class="event_source">' + source + '</span><br/>' + 
-              '<span class="event_time">' + ago + '</span><br/>' + 
+      return  '<p class="event_title">' + title + '</p>' +
+              '<p><span class="event_source">' + source + '&mdash; </span> ' +
+              '<span class="event_time">' + ago + '</span></p>' +
               '<img class="event_tiny_image" src="' + image + '" />';
             
     },
