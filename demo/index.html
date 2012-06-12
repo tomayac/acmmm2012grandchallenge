@@ -9,19 +9,22 @@
     
     <div class="events_section" id="flipbook">
       <div class="even page titlepage fixed">
-        <img class="background">
+        <img class="background" src="default_background.jpg">
         <div class="content">
           <hgroup>
             <h1 class="mag_title">NiteOutMag™<br><span class="mag_city"></span></h1>
-            <h2 class="mag_subtitle">At least the Web remembers what&nbsp;happened last night!</h2>
+            <h2 class="mag_subtitle">
+              At least the Web remembers<br/>
+              what happened last night!
+            </h2>
+            <h3 class="mag_volume">Volume <script>document.write(new Date().getUTCMonth() + ', ' + new Date().getUTCFullYear());</script></h3>
           </hgroup>
           <div class="controls">
-            <label for="location_search">Location</label>
             <input type="search" id="location_search" placeholder="Las Vegas" />
             <button type="submit" id="do_search">Bam!</button>
             <img id="spinner" style="display:none;" width="16" height="16" src="spinner.gif" />
             <span id="progress" style="display:none;"></span>
-            <p>You can flip pages with the left and right arrows.</p>
+            <p class="mag_heading">You can flip pages with the left and right arrows.</p>
           </div>
         </div>
       <div>

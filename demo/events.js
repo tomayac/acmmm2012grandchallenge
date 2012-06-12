@@ -14,7 +14,7 @@ var htmlFactory = {
   event: function(eventId, title, start, image, source) {
     var ago = humaneDate(start);
     return  '<p class="event_title">' + title + '</p>' +
-            '<p><span class="event_source">' + source + '&mdash; </span> ' +
+            '<p><span class="event_source">' + source + '&mdash;</span> ' +
             '<span class="event_time">' + ago + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />';
           
@@ -76,8 +76,7 @@ searchButton.addEventListener('click', function() {
   searchButton.style.display = 'none';
   var location = locationInput.value;
   if (location) {
-    geocode(location);
-    setTitlePage(location);
+    geocode(location);    
   }
   return false;
 }, false);
@@ -168,6 +167,7 @@ function retrieveGeocodeResults(data) {
     getEventfulEvents(coords.lat, coords.lng, '', location.formatted_address);
     getUpcomingEvents(coords.lat, coords.lng, '', location.formatted_address);
     locationInput.value = location.formatted_address;
+    setTitlePage(location.formatted_address.split(',')[0]);
   } else {
     // TODO: error handling
   }
