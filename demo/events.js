@@ -15,12 +15,11 @@
     // the container for an event
     event: function(eventId, title, start, image, source) {
       var ago = humaneDate(start);
-      return  '<div id="' + eventId + '" class="event">' +
-                '<strong class="event_title">' + title + '</strong><br/>' +
-                '<span class="event_source">' + source + '</span><br/>' + 
-                '<span class="event_time">' + ago + '</span><br/>' + 
-                '<img class="event_tiny_image" src="' + image + '" />' +
-              '</div>';    
+      return  '<strong class="event_title">' + title + '</strong><br/>' +
+              '<span class="event_source">' + source + '</span><br/>' + 
+              '<span class="event_time">' + ago + '</span><br/>' + 
+              '<img class="event_tiny_image" src="' + image + '" />';
+            
     },
     // the individual images that illustrate an event
     media: function(mediaurl, description, storyurl) {
@@ -41,6 +40,7 @@
   var locationInput = document.getElementById('location_search');
   var eventsFlipbook = document.getElementById('flipbook');  
   var spinnerImage =  document.getElementById('spinner');
+  var progressSpan = document.getElementById('progress');
   
   // used to store existing events when working with multiple event sources
   // in order to avoid event duplication
@@ -56,20 +56,24 @@
   var pendingAjaxRequests = 0;
   function requestSent(requestId) {
     pendingAjaxRequests++;
-console.log('Pending requests: ' + pendingAjaxRequests);
+    updateProgress(pendingAjaxRequests);    
+    spinnerImage.style.display = 'inline';
+    progress.style.display = 'inline';
   }
   function requestReceived(requestId) {
     pendingAjaxRequests--;
-console.log('Pending requests: ' + pendingAjaxRequests);
+    updateProgress(pendingAjaxRequests);
     if (pendingAjaxRequests === 0) {
       spinnerImage.style.display = 'none';
+      progress.style.display = 'none';
       var flipbook = $('#flipbook');
       Object.keys(eventMediaHtml).forEach(function(eventId) {
-        flipbook.turn('addPage', eventMediaHtml[eventId]);               
+        flipbook.turn('addPage', $('<div/>').html(eventMediaHtml[eventId]));
       });
-    } else {
-      spinnerImage.style.display = 'inline';      
     }
+  }
+  function updateProgress(pendingAjaxRequests) {
+    progressSpan.innerHTML = pendingAjaxRequests + ' pending items to go.';
   }
   
   // add logic to the search button
@@ -83,9 +87,6 @@ console.log('Pending requests: ' + pendingAjaxRequests);
     return false;
   }, false);
   
-  // the number of initial fixed pages that exist in the flipbook (the cover)
-  var numberOfInitialPages = 1;
-  
   // creates the flipbook
   (function makeFlipbook() {
     var flipbook = $('#flipbook');
@@ -94,7 +95,7 @@ console.log('Pending requests: ' + pendingAjaxRequests);
       duration: 1000,
       acceleration: true,
       gradients: true,
-      elevation: 50
+      elevation: 0
     });
     var pages = flipbook.turn('pages');
     for (var i = 0; i < pages; i++) {
@@ -373,7 +374,7 @@ console.log('Pending requests: ' + pendingAjaxRequests);
     }
     xhr.open('GET', url, true);
     xhr.send();        
-    requestSent();    
+    requestSent();
   }
   
   // retrieves events from Eventful
