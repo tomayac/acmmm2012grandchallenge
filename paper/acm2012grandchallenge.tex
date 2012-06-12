@@ -1,0 +1,122 @@
+\documentclass{sig-alternate}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[activate=compatibility]{microtype}
+
+% autoref command
+\usepackage[pdftex,urlcolor=black,colorlinks=true,linkcolor=black,citecolor=black]{hyperref}
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Subsection}
+\def\subfloatautorefname{Subfigure}
+
+\usepackage[lofdepth,lotdepth]{subfig}
+
+\usepackage{enumitem}
+
+\usepackage{textcomp}
+
+\usepackage{mathtools}
+
+% give emph a normal fontsize
+\let\oldemph\emph
+\renewcommand{\emph}[1]{\oldemph{\fontsize{9}{9}\selectfont #1}}
+
+% more readable footnote layout
+\renewcommand{\footnotesize}{\fontsize{8pt}{10pt}}
+\setlength{\footnotesep}{.5cm}
+
+% todo macro
+\usepackage{color}
+\newcommand{\todo}[1]{\noindent\textcolor{red}{{\bf \{TODO}: #1{\bf \}}}}
+
+% listings and Verbatim environment
+\usepackage{fancyvrb}
+\usepackage{relsize}
+\usepackage{listings}
+\usepackage{verbatim}
+\newcommand{\defaultlistingsize}{\fontsize{8pt}{9.5pt}}
+\newcommand{\inlinelistingsize}{\fontsize{8pt}{11pt}}
+\newcommand{\smalllistingsize}{\fontsize{7.5pt}{9.5pt}}
+\newcommand{\listingsize}{\defaultlistingsize}
+\RecustomVerbatimCommand{\Verb}{Verb}{fontsize=\inlinelistingsize}
+\RecustomVerbatimEnvironment{Verbatim}{Verbatim}{fontsize=\defaultlistingsize}
+\lstset{frame=lines,captionpos=b,numberbychapter=false,escapechar=§,
+        aboveskip=0.5em,belowskip=0em,abovecaptionskip=0em,belowcaptionskip=0em,
+framexbottommargin=-1em,
+        basicstyle=\ttfamily\listingsize\selectfont}
+
+% use Courier from this point onward, except for URLs
+\let\oldttdefault\ttdefault
+\renewcommand{\ttdefault}{pcr}
+\let\oldurl\url
+\renewcommand{\UrlFont}{\fontfamily{\oldttdefault}\selectfont}
+
+% linewrap symbol
+\definecolor{grey}{RGB}{130,130,130}
+\newcommand{\linewrap}{\raisebox{-.6ex}{\textcolor{grey}{$\hookleftarrow$}}}
+
+% more pleasing quote environment
+\usepackage{tikz}
+\newcommand*{\openquote}{\tikz[remember picture,overlay,xshift=-7pt,yshift=1pt]
+     \node (OQ) {\fontfamily{fxl}\fontsize{16}{16}\selectfont``};\kern0pt}
+\newcommand*{\closequote}{\tikz[remember picture,overlay,xshift=2pt,yshift=-4.5pt]
+     \node (CQ) {\fontfamily{fxl}\fontsize{16}{16}\selectfont''};}
+\renewenvironment{quote}%
+{\setlength{\parindent}{1cm}\par\openquote}
+{\closequote\vspace{-4.5pt}
+}
+
+\begin{document}
+
+\title{NiteOutMag{\LARGE \textsuperscript{\textregistered}}---At Least the Web\\ Remembers What Happened Last Night}
+
+\numberofauthors{2}
+\author{
+\vspace{5em}
+}
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+%\category{H.3.4}{Information Systems}{Information Storage and Retrieval}[World Wide Web]
+%\category{H.3.5}{Online Information Services}{Web-based services}
+
+%\keywords{}
+
+
+\section{Introduction}
+
+\section{Related Work}
+
+\section{Implementation}
+
+\subsection{Geocoding---From Address to Lat/Long}
+
+\subsection{Event Search---Things to Do at Lat/Long}
+
+\subsection{Media Search---Photos Taken at an Event}
+
+\subsection{Magazine Layout---Arranging Esthetically}
+
+\section{Demonstration}
+
+\subsection{Installation Instructions}
+
+\subsection{Query Examples}
+
+\section{Future Work and Conclusion}
+
+% \section{Acknowledgments} 
+% Double-blind review process, need to remove for now
+
+
+\bibliographystyle{abbrv}
+\bibliography{acm2012grandchallenge}
+
+\balancecolumns
+\end{document}

@@ -10,7 +10,7 @@
 			<key>filename</key>
 			<string>events.js</string>
 			<key>lastUsed</key>
-			<date>2012-06-12T08:35:47Z</date>
+			<date>2012-06-12T16:14:14Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -18,19 +18,19 @@
 			<key>filename</key>
 			<string>index.html</string>
 			<key>lastUsed</key>
-			<date>2012-06-12T08:26:14Z</date>
+			<date>2012-06-12T16:14:14Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>manifest.json</string>
 			<key>lastUsed</key>
-			<date>2012-06-11T14:02:06Z</date>
+			<date>2012-06-12T15:15:28Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>main.css</string>
 			<key>lastUsed</key>
-			<date>2012-06-12T08:35:47Z</date>
+			<date>2012-06-12T15:21:47Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -42,23 +42,23 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>39</integer>
 				<key>line</key>
-				<integer>375</integer>
+				<integer>99</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>350</integer>
+			<integer>0</integer>
 		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>59</integer>
 				<key>line</key>
-				<integer>24</integer>
+				<integer>27</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -70,14 +70,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>15</integer>
 				<key>line</key>
-				<integer>22</integer>
+				<integer>59</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>22</integer>
 		</dict>
 		<key>manifest.json</key>
 		<dict>
@@ -104,6 +104,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{210, 71}, {1390, 1107}}</string>
+	<string>{{-110, 0}, {1390, 778}}</string>
 </dict>
 </plist>
