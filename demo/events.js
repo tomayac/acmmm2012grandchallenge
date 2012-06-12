@@ -95,7 +95,7 @@
       duration: 1000,
       acceleration: false,
       gradients: true,
-      elevation: 0
+      elevation: 50
     });
     var pages = flipbook.turn('pages');
     for (var i = 0; i < pages; i++) {
@@ -130,6 +130,11 @@
     pendingAjaxRequests = 0;
     // initialize the flipbook
     eventMediaHtml = {};
+    var flipbook = $('#flipbook');
+    var pages = flipbook.turn('pages');
+    for (var i = 0; i < pages; i++) {
+      flipbook.turn('removePage', i);
+    }
   }
   
   // gets the lat/long pair and sanitized location name for a location query
