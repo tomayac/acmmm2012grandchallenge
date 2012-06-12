@@ -500,6 +500,13 @@
     content.html(content.html() + contentHtml);
   }
   
+  function addBackgroundImage(page, imageUrl) {
+    if(!page.data().background) {
+      page.data().background = imageUrl;
+      page.prepend($('<img class="background">').attr('src', imageUrl));
+    }
+  }
+  
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
@@ -566,6 +573,7 @@
                   mediaItem.message.clean,
                   mediaItem.storyurl);
               eventMediaItems[eventId][mediaItem.mediaurl] = true;
+              addBackgroundImage(eventPages[eventId], mediaItem.mediaurl);
             }
           }
         });

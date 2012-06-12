@@ -36,8 +36,21 @@ body {
   background-image:-webkit-linear-gradient(right, #FFF 95%, #ddd 100%);
 }
 
+.page {
+  z-index: 10;
+}
+
+img.background {
+  min-height: 100%;
+  min-width: 100%;
+  position: absolute;
+  z-index: 20;
+}
+
 .page .content {
   padding: 20px;
+  position: absolute;
+  z-index: 100;
 }
 
 .mag_title {
