@@ -49,15 +49,24 @@
   // used to store the URLs of the media items for an event
   var eventMediaItems = {};
   
+  // needed to store HTML for each event
+  var eventMediaHtml = {};
+  
   // used to track pending Ajax requests
   var pendingAjaxRequests = 0;
   function requestSent(requestId) {
-    pendingAjaxRequests += 1;
+    pendingAjaxRequests++;
+console.log('Pending requests: ' + pendingAjaxRequests);
   }
   function requestReceived(requestId) {
-    pendingAjaxRequests -= 1;
+    pendingAjaxRequests--;
+console.log('Pending requests: ' + pendingAjaxRequests);
     if (pendingAjaxRequests === 0) {
       spinnerImage.style.display = 'none';
+      var flipbook = $('#flipbook');
+      Object.keys(eventMediaHtml).forEach(function(eventId) {
+        flipbook.turn('addPage', eventMediaHtml[eventId]);               
+      });
     } else {
       spinnerImage.style.display = 'inline';      
     }
@@ -74,16 +83,18 @@
     return false;
   }, false);
   
+  // the number of initial fixed pages that exist in the flipbook (the cover)
+  var numberOfInitialPages = 1;
+  
   // creates the flipbook
-  function makeFlipbook() {
+  (function makeFlipbook() {
     var flipbook = $('#flipbook');
     flipbook.turn({
       display: 'double',
       duration: 1000,
       acceleration: true,
       gradients: true,
-      width: '1000px',
-      height: '600px'
+      elevation: 50
     });
     var pages = flipbook.turn('pages');
     for (var i = 0; i < pages; i++) {
@@ -97,21 +108,7 @@
         flipbook.turn('next');
       }
     });
-    flipbook.turn({
-      when: {
-        turn: function(e, page, view) {
-          var eventId = eventMediaHtml[page];
-          console.log('event ID ' + eventId);
-          console.log('page ' + page);
-          console.log('view ' + view);
-          view.innerHTML = eventMediaHtml[eventId];
-        }
-      }
-    });
-  } 
-  
-  // needed to store HTML for each event
-  var eventMediaHtml = {};    
+  })(); 
     
   // helper function needed to create unique IDs
   function createRandomId() {
@@ -132,7 +129,6 @@
     pendingAjaxRequests = 0;
     // initialize the flipbook
     eventMediaHtml = {};
-    makeFlipbook();
   }
   
   // gets the lat/long pair and sanitized location name for a location query
@@ -458,7 +454,7 @@
   // gets media items for a given event title and/or lat/long pair
   function getMediaItems(title, commonLocation, lat, long, eventId, eventHtml) {
     getNodeMediaItems(title, commonLocation, eventId, eventHtml);
-    getTeleportdMediaItems(title, lat, long, eventId, eventHtml);
+    // getTeleportdMediaItems(title, lat, long, eventId, eventHtml); // ficken
   }
 
   // gets media items from Teleportd that match a given lat/long pair and event
@@ -489,12 +485,9 @@
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
-      if (typeof eventMediaHtml[eventId] === 'undefined') {
-        var page = $(eventHtml);
-        var flipbook = $('#flipbook');
-        flipbook.turn('addPage', page);
-        eventMediaHtml[eventId] = '';
-        eventMediaHtml[flipbook.turn('pages')] = eventId;
+      var flipbook = $('#flipbook');        
+      if (!eventMediaHtml[eventId]) {        
+        eventMediaHtml[eventId] = eventHtml;
       }
       var html = '';
       data.hits.forEach(function(mediaItem) {
@@ -545,12 +538,9 @@
       }      
     }
     if (eventsExist) {
-      if (typeof eventMediaHtml[eventId] === 'undefined') {
-        var page = $(eventHtml);
-        var flipbook = $('#flipbook');
-        flipbook.turn('addPage', page);
-        eventMediaHtml[eventId] = '';
-        eventMediaHtml[flipbook.turn('pages')] = eventId;
+      var flipbook = $('#flipbook');
+      if (!eventMediaHtml[eventId]) {                
+        eventMediaHtml[eventId] = eventHtml;
       }
       var html = '';
       socialNetworks.forEach(function(socialNetwork) {
