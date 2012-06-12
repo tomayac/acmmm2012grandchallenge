@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Chango|Questrial);
+
 html {
   height: 100%;
   margin: 0;
@@ -5,7 +7,7 @@ html {
 }
 
 body {
-  font-family: sans-serif;
+  font-family: Questrial, sans-serif;
   font-size: 12pt;
   color: white;
   background-color: black;
@@ -39,6 +41,7 @@ body {
 }
 
 .mag_title {
+  font-family: Chango;
   color: orange;
   text-shadow:
       -1px -1px 0 #000,
