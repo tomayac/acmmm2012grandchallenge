@@ -49,8 +49,8 @@
   // used to store the URLs of the media items for an event
   var eventMediaItems = {};
   
-  // needed to store HTML for each event
-  var eventMediaHtml = {};
+  // the pages associated to each event
+  var eventPages = {};
   
   // used to track pending Ajax requests
   var pendingAjaxRequests = 0;
@@ -67,8 +67,8 @@
       spinnerImage.style.display = 'none';
       progress.style.display = 'none';
       var flipbook = $('#flipbook');
-      Object.keys(eventMediaHtml).forEach(function(eventId) {
-        flipbook.turn('addPage', $('<div/>').html(eventMediaHtml[eventId]));
+      Object.keys(eventPages).forEach(function(eventId) {
+        flipbook.turn('addPage', eventPages[eventId]);
       });
     }
   }
@@ -129,7 +129,7 @@
     eventMediaItems = {};
     pendingAjaxRequests = 0;
     // initialize the flipbook
-    eventMediaHtml = {};
+    eventPages = {};
     var flipbook = $('#flipbook');
     var pages = flipbook.turn('pages');
     for (var i = 0; i < pages; i++) {
@@ -492,10 +492,10 @@
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
       var flipbook = $('#flipbook');        
-      if (!eventMediaHtml[eventId]) {        
-        eventMediaHtml[eventId] = eventHtml;
+      if (!eventPages[eventId]) {
+        eventPages[eventId] = $('<div>').html(eventHtml);
       }
-      var html = '';
+      var html = eventPages[eventId].html();
       data.hits.forEach(function(mediaItem) {
         if (mediaItem.typ === 'image') {
           // TODO: check if there is a way to get the description and story URL
@@ -505,7 +505,7 @@
           }
         }
       });   
-      eventMediaHtml[eventId] += html;
+      eventPages[eventId].html(html);
     }
   }
   
@@ -545,10 +545,10 @@
     }
     if (eventsExist) {
       var flipbook = $('#flipbook');
-      if (!eventMediaHtml[eventId]) {                
-        eventMediaHtml[eventId] = eventHtml;
+      if (!eventPages[eventId]) {
+        eventPages[eventId] = $('<div>').html(eventHtml);
       }
-      var html = '';
+      var html = eventPages[eventId].html();
       socialNetworks.forEach(function(socialNetwork) {
         var media = data[socialNetwork];
         media.forEach(function(mediaItem) {
@@ -566,7 +566,7 @@
           }
         });
       });      
-      eventMediaHtml[eventId] += html;
+      eventPages[eventId].html(html);
     }
   }
   
