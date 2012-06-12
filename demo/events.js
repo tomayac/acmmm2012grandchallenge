@@ -66,10 +66,6 @@
     if (pendingAjaxRequests === 0) {
       spinnerImage.style.display = 'none';
       progress.style.display = 'none';
-      var flipbook = $('#flipbook');
-      Object.keys(eventPages).forEach(function(eventId) {
-        flipbook.turn('addPage', eventPages[eventId]);
-      });
     }
   }
   function updateProgress(pendingAjaxRequests) {
@@ -488,12 +484,19 @@
     requestSent();    
   }
   
+  // adds a new page to the flipbook and returns it
+  function addPage(pageHtml) {
+    var page = $('<div>').html(pageHtml);
+    $('#flipbook').turn('addPage', page);
+    return page;
+  }
+  
   // retrieves media items from Teleportd
   function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
     if (data.hits && data.hits.length) {
       var flipbook = $('#flipbook');        
       if (!eventPages[eventId]) {
-        eventPages[eventId] = $('<div>').html(eventHtml);
+        eventPages[eventId] = addPage(eventHtml);
       }
       var html = eventPages[eventId].html();
       data.hits.forEach(function(mediaItem) {
@@ -546,7 +549,7 @@
     if (eventsExist) {
       var flipbook = $('#flipbook');
       if (!eventPages[eventId]) {
-        eventPages[eventId] = $('<div>').html(eventHtml);
+        eventPages[eventId] = addPage(eventHtml);
       }
       var html = eventPages[eventId].html();
       socialNetworks.forEach(function(socialNetwork) {
