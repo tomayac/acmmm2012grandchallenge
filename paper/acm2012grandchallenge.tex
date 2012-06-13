@@ -108,7 +108,7 @@ The chorus of the popular song \emph{Tik Tok} by the artist \emph{Ke\$ha} goes
 \emph{``Don't stop, make it pop. DJ, blow my speakers up. Tonight, I'mma fight.
 'Til we see the sunlight. Tik tok on the clock. But the party don't stop, no.''}
 We all know, however, that each party comes to an end eventually.
-With NiteOutMag\texttrademark, we present a~Web application
+With NiteOutMag\texttrademark, we present a~Chrome Web application
 that can help people recover what (the hell) happened last night.
 Among the younger generation, nightlife activities---just about like any other
 activity---together with related multimedia data get shared online on social networks.
@@ -164,7 +164,7 @@ Twitpic (\url{twitpic.com}), and
 The actual detection of events based on information from SNSs
 is out of bounds for this paper.
 We point the reader to, \emph{e.g.},~\cite{Petkos2012} by Petkos \emph{et al.},
-which is a typical example of event detection based on multimodal clustering.
+which is a~typical example of event detection based on multimodal clustering.
 For our purposes, event databases as listed below are adequate.
  
 \subsection{Event Databases}
@@ -183,7 +183,7 @@ In~\cite{Brenner2012}, Brenner and Izquierdo present
 an approach to detect social events and retrieve associated photos
 in collaboratively annotated photo collections combining data of various modalities
 such as time, location, and textual and visual features.
-In~\cite{Liu2011}, Liu \emph{et al.} present a method
+In~\cite{Liu2011}, Liu \emph{et al.} present a~method
 combining semantic inferencing and visual analysis for automatically gathering
 photos and videos illustrating events.
 
@@ -191,16 +191,18 @@ Regarding esthetic aspects of media compilation,
 in~\cite{Sandhaus2011}, Sandhaus \emph{et al.} consider visual and
 esthetic features for the automatic creation of photo books.
 Obrador \emph{et al.}\ use visual and esthetic features
-for a category-based approach to automatically assess
+for a~category-based approach to automatically assess
 the esthetic appeal of photographs~\cite{Obrador2012}.
-
 
 \section{Implementation}
 In this section, we provide implementation details for the
 NiteOutMag\texttrademark application.
+It is implemented as a~Chrome application, as this technique provides
+a transparent statement about the required resources of the application,
+\emph{i.e.}, cross-domain access to event databases and search APIs.
 
 \subsection{Geocoding}
-The application focuses on events that occurred in a certain area.
+The application focuses on events that occurred in a~certain area.
 While event databases tend to work based on concrete points like
 \mbox{(40.7590110, -73.98447220)}, \emph{i.e.},
 latitude and longitude pairs, human beings use more human-friendly place references
@@ -209,13 +211,13 @@ Geocoding is the process of finding associated geographic coordinates
 (often expressed as latitude and longitude) from other geographic data,
 such as street addresses, or zip codes.
 The user can enter an exact address, such as
-``618 W. 46th St, New York, NY 10036'', or a very broad area like ``Las Vegas''.
+``618 W. 46th St, New York, NY 10036'', or a~very broad area like ``Las Vegas''.
 The returned latitude and longitude pair is always the center
 of the particular point or area of interest.
 In our implementation, we use the Google Geocoding API~\cite{Geocoding2012}.
 
 \subsection{Event Search}
-Based on a latitude and longitude pair, we search the before-mentioned
+Based on a~latitude and longitude pair, we search the before-mentioned
 event databases via their respective event search
 APIs~\cite{Eventful2012,Foursquare2012,GooglePlaces2012,Upcoming2012}
 for \emph{past} events within an empirically determined radius of five kilometers.
@@ -233,8 +235,8 @@ According to a~study performed in May 2012 by Seline~\cite{Quora2012},
 only roughly 1\% of all microposts on Twitter are geotagged.
 In addition to that, as our approach covers more SNSs than Twitter,
 we need to consider that not all SNSs support geotagging of content.
-In consequence, we use a two-tier approach for media search,
-illustrated by a real event of a Beach Boys
+In consequence, we use a~two-tier approach for media search,
+illustrated by a~real event of a~Beach Boys
 concert\footnote{\url{http://www.thebeachboys.com/#tour}}
 in the Merriweather Post Pavilion in Columbia, MD.
 The event name is \emph{Beach Boys},
@@ -246,30 +248,30 @@ in the Google Geocoding API~\cite{Geocoding2012},
 \emph{i.e.}, \emph{Columbia} in the concrete case.
 Human beings aware of the local context do not need to disambiguate, \emph{i.e.},
 there is no need to explicitly state \emph{MD}.
-The two-tier approach consists thus of a full-text search for:
+The two-tier approach consists thus of a~full-text search for:
 
 \emph{(i)} the (event name) $+$ the (venue name), and
 
 \emph{(ii)} the (event name) $+$ the (human-friendly address).
 
-We have implemented a media collector consisting of media extractors for all SNSs
+We have implemented a~media collector consisting of media extractors for all SNSs
 listed in \autoref{sec:social-networks}.
-The media collector takes as an input a search term, \emph{e.g.},
+The media collector takes as an input a~search term, \emph{e.g.},
 \emph{Beach Boys Columbia} for the example above,
-and then performs a parallel full-text search using the search APIs of all SNSs.
-When all the media extractors have responded, a unified SNS-agnostic output is delivered.
-We propose a common alignment schema, illustrated in
+and then performs a~parallel full-text search using the search APIs of all SNSs.
+When all the media extractors have responded, a~unified SNS-agnostic output is delivered.
+We propose a~common alignment schema, illustrated in
 \autoref{lst:media}, which shows the resulting metadata for an exemplary media item.
 \autoref{fig:architecture} shows the overall architecture of the media collector.
 
 \begin{figure*}[bth!]
 \centering
 \includegraphics[width=0.8\linewidth]{./architecture.pdf}
-\caption{Overview of the media collector: hybrid approach for the media item extraction process using a combination of API access and Web scraping}
+\caption{Overview of the media collector: hybrid approach for the media item extraction process using a~combination of API access and Web scraping}
 \label{fig:architecture}
 \end{figure*}
 
-\begin{lstlisting}[language=JavaScript,caption={Sample output of the media collector showing a \mbox{Google+} post (edited for legibility, URLs shortened).},label={lst:media}]
+\begin{lstlisting}[language=JavaScript,caption={Sample output of the media collector showing a~\mbox{Google+} post (edited for legibility, URLs shortened).},label={lst:media}]
 {
   "mediaurl": "http://t.co/ubagkiR9",
   "storyurl": "https://t.co/dau5pBWD",
@@ -293,18 +295,25 @@ We propose a common alignment schema, illustrated in
 \end{lstlisting}
 
 \subsection{Magazine Layout}
-In order to create the illusion of a real magazine,
+In order to create the illusion of a~real magazine,
 flipping from page to page needs to be as credible as possible.
 The open-source library turn.js by Emmanuel García~\cite{TurnJs2012}
 allows for the dynamic creation of magazines solely based on HTML5 technologies
-with a very realistic page flip effect.
+with a~very realistic page flip effect.
 We treat each event as one page of the magazine,
 add the event metadata as headline and subheading of the page,
 and arrange the images and accompanying microposts to fill the page.
 For each event, we use the image with the highest resolution
-as background image of the page in order to create a lifestyle magazine appearance. 
+as background image of the page in order to create a~lifestyle magazine appearance. 
 
 \subsection{Installation Instructions}
+The NiteOutMag\texttrademark application requires the Chrome browser.
+Download the application from the URL \todo{Add demo link} to the local file system.
+Once there, drag and drop it into the \url{chrome://chrome/extensions/} page in the browser. 
+When you drop it on the extensions page, you will notice an install option popping up there.
+When you agree to install, you will see the standard installation dialog
+that informs you about the rights that the application is requesting.
+It needs access to the before-mentioned event databases and media search APIs.
 
 \section{Experiments}
 

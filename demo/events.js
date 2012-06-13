@@ -523,7 +523,7 @@ function addPageContent(page, contentHtml) {
 
 function addBackgroundImage(page, imageUrl) {
   if(!page.data().background) {
-    page.data().background = imageUrl;    
+    page.data().background = imageUrl;
     page.prepend($('<img class="background">').attr('src', imageUrl));
   }
 }
