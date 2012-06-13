@@ -186,6 +186,10 @@ function sanitizeEventTitle(title) {
   title = title.replace('&nbsp;', ' ');
   title = title.replace('&quot;', ' ');
   title = title.replace('&apos;', ' ');
+  title = title.replace('&amp;', ' ');
+  title = title.replace('&gt;', ' ');
+  title = title.replace('&lt;', ' ');
+  
   // w/ => with
   title = title.replace(/\bw\/\s+/gi, 'with ');
   // feat./ft. => featuring
@@ -262,46 +266,48 @@ function retrieveFoursquareEventsResults(data, formattedAddress, lat, long) {
       (now.getUTCMonth() < 10? '0' + now.getUTCMonth() : now.getUTCMonth()) +
       (now.getUTCDate() < 10? '0' + now.getUTCDate() : now.getUTCDate());
   data.response.venues.forEach(function(venue) {
-    var eventUrl = url + venue.id + '/events' + auth1 + auth2 + v;
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
-        requestReceived();
-        if (xhr.status == 200) {
-          var json = JSON.parse(xhr.responseText);
-          if (!json.response.events) {
-            return;
-          }
-          var events = json.response.events.items;
-          for (var i = 0, len = events.length; i < len; i++) {
-            var e = events[i];
-            var title = sanitizeEventTitle(e.name);
-            if (eventWithSimilarTitleExists(title)) {
-              continue;
+    (function(myVenue) {
+      var eventUrl = url + myVenue.id + '/events' + auth1 + auth2 + v;
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+          requestReceived();
+          if (xhr.status == 200) {
+            var json = JSON.parse(xhr.responseText);
+            if (!json.response.events) {
+              return;
             }
-            var start = new Date(e.date * 1000);
-            var commonLocation = formattedAddress.split(',')[0];
-            var eventId = 'event_' + createRandomId();
-            if (!eventMediaItems[eventId]) {
-              eventMediaItems[eventId] = {};
+            var events = json.response.events.items;
+            for (var i = 0, len = events.length; i < len; i++) {
+              var e = events[i];
+              var title = sanitizeEventTitle(e.name);
+              if (eventWithSimilarTitleExists(title)) {
+                continue;
+              }
+              var start = new Date(e.date * 1000);
+              var commonLocation = formattedAddress.split(',')[0];
+              var eventId = 'event_' + createRandomId();
+              if (!eventMediaItems[eventId]) {
+                eventMediaItems[eventId] = {};
+              }
+              var eventHtml =
+                  htmlFactory.event(eventId, title, start, '', 'Foursquare');
+              eventPages[eventId] = addPage(eventHtml);
+              // use the exacter event venue location
+              getMediaItems(title, myVenue.name, myVenue.location.lat,
+                  myVenue.location.long, eventId, eventHtml);
+              // use the less exact search location
+              getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
             }
-            var eventHtml =
-                htmlFactory.event(eventId, title, start, '', 'Foursquare');
-            eventPages[eventId] = addPage(eventHtml);
-            // use the exacter event venue location
-            getMediaItems(title, commonLocation, venue.location.lat,
-                venue.location.long, eventId, eventHtml);
-            // use the less exact search location
-            getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
+          } else {
+            console.log('Error: Getting Foursqaure events for the coordinates failed.');
           }
-        } else {
-          console.log('Error: Getting Foursqaure events for the coordinates failed.');
         }
       }
-    }
-    xhr.open('GET', eventUrl, true);
-    xhr.send();
-    requestSent();
+      xhr.open('GET', eventUrl, true);
+      xhr.send();
+      requestSent();
+    })(venue);
   });
 }
 
@@ -357,7 +363,7 @@ function retrieveUpcomingEventsResults(data, formattedAddress, lat, long) {
         htmlFactory.event(eventId, title, start, image, 'Upcoming');
     eventPages[eventId] = addPage(eventHtml);
     // use the exacter event venue location
-    getMediaItems(title, commonLocation, e.latitude, e.longitude, eventId,
+    getMediaItems(title, e.venue_name, e.latitude, e.longitude, eventId,
         eventHtml);
     // use the less exact search location
     getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
@@ -407,6 +413,7 @@ function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
     var start = e.getElementsByTagName('start_time')[0].textContent;
     var latitude = e.getElementsByTagName('latitude')[0].textContent;
     var longitude = e.getElementsByTagName('longitude')[0].textContent;
+    var venueName = e.getElementsByTagName('venue_name')[0].textContent;
     var commonLocation = formattedAddress.split(',')[0];
     var eventId = 'event_' + createRandomId();
     if (!eventMediaItems[eventId]) {
@@ -425,7 +432,7 @@ function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
         htmlFactory.event(eventId, title, start, imageSrc, 'Eventful');
     eventPages[eventId] = addPage(eventHtml);
     // use the exacter event venue location
-    getMediaItems(title, commonLocation, latitude, longitude, eventId,
+    getMediaItems(title, venueName, latitude, longitude, eventId,
         eventHtml);
     // use the less exact search location
     getMediaItems(title, commonLocation, lat, long, eventId,
