@@ -175,14 +175,36 @@ the esthetic appeal of photographs~\cite{Obrador2012}.
 
 
 \section{Implementation}
+In this section, we provide implementation details for the
+NiteOutMag\texttrademark application.
 
-\subsection{Geocoding---From Address to Lat/Long}
+\subsection{Geocoding}
+The application focuses on events that occurred in a certain area.
+While event databases tend to work based on concrete points like
+\mbox{(40.7590110, -73.98447220)}, \emph{i.e.},
+latitude and longitude pairs, human beings use more human-friendly place references
+like ``Times Square, New York''.
+Geocoding is the process of finding associated geographic coordinates
+(often expressed as latitude and longitude) from other geographic data,
+such as street addresses, or zip codes.
+The user can enter an exact address, such as
+``618 W. 46th St, New York, NY 10036'', or a very broad area like ``Las Vegas''.
+The returned latitude and longitude pair is always the center
+of the particular point or area of interest.
+In our implementation, we use the Google Geocoding API~\cite{Geocoding2012}.
 
-\subsection{Event Search---Things to Do at Lat/Long}
+\subsection{Event Search}
 
-\subsection{Media Search---Photos Taken at an Event}
+\subsection{Media Search}
 
-\subsection{Magazine Layout---Arranging Esthetically}
+\begin{figure*}
+\centering
+\includegraphics[width=1.0\linewidth]{./architecture.pdf}
+\caption{Overview of the media collector: hybrid approach for the media item extraction process using a combination of API access and Web scraping}
+\label{fig:architecture}
+\end{figure*}
+
+\subsection{Magazine Layout}
 
 \subsection{Installation Instructions}
 
