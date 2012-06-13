@@ -48,6 +48,27 @@
 framexbottommargin=-1em,
         basicstyle=\ttfamily\listingsize\selectfont}
 
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{red},
+  sensitive=false,
+  showstringspaces=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{gray}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
 % use Courier from this point onward, except for URLs
 \let\oldttdefault\ttdefault
 \renewcommand{\ttdefault}{pcr}
@@ -122,7 +143,7 @@ that event attendants may have shared their event-related content on.
 In the next subsection, we thus list the SNSs considered for
 NiteOutMag\texttrademark.
 
-\subsection{Social Networks}
+\subsection{Social Networks} \label{sec:social-networks}
 A~social network is an online service or media platform that focuses on building
 and reflecting social relationships among people sharing interests and/or activities.
 In this paper, we consider eleven different social networks
@@ -207,23 +228,81 @@ with an empirically determined editing distance of five,
 which catches things like ``Titanic'' and ``Titanic 3D'' for, \emph{e.g.}, movie events.
 
 \subsection{Media Search}
-Unlike event search, media search in our application is not based on geolocation.
-This is due to the fact that only a small number of microposts with media items
-are properly geotagged.
-In a~study performed in May 2012, Seline showed that only roughly 1\% of all microposts
-on Twitter carry geographical data~\cite{Quora2012}.
-In addition to that, as our approach covers more than just Twitter,
-not all SNSs support geotagging ones content.
+Unlike event search, media search in our application is \emph{not} based on geolocation.
+According to a~study performed in May 2012 by Seline~\cite{Quora2012},
+only roughly 1\% of all microposts on Twitter are geotagged.
+In addition to that, as our approach covers more SNSs than Twitter,
+we need to consider that not all SNSs support geotagging of content.
+In consequence, we use a two-tier approach for media search,
+illustrated by a real event of a Beach Boys
+concert\footnote{\url{http://www.thebeachboys.com/#tour}}
+in the Merriweather Post Pavilion in Columbia, MD.
+The event name is \emph{Beach Boys},
+the venue name is \emph{Merriweather Post Pavilion},
+and the area is \emph{Columbia, Maryland (MD)}.
+We define as \emph{human-friendly address}
+the first part up to the comma of the \texttt{formatted\_address} field
+in the Google Geocoding API~\cite{Geocoding2012},
+\emph{i.e.}, \emph{Columbia} in the concrete case.
+Human beings aware of the local context do not need to disambiguate, \emph{i.e.},
+there is no need to explicitly state \emph{MD}.
+The two-tier approach consists thus of a full-text search for:
 
+\emph{(i)} the (event name) $+$ the (venue name), and
 
-\begin{figure*}
+\emph{(ii)} the (event name) $+$ the (human-friendly address).
+
+We have implemented a media collector consisting of media extractors for all SNSs
+listed in \autoref{sec:social-networks}.
+The media collector takes as an input a search term, \emph{e.g.},
+\emph{Beach Boys Columbia} for the example above,
+and then performs a parallel full-text search using the search APIs of all SNSs.
+When all the media extractors have responded, a unified SNS-agnostic output is delivered.
+We propose a common alignment schema, illustrated in
+\autoref{lst:media}, which shows the resulting metadata for an exemplary media item.
+\autoref{fig:architecture} shows the overall architecture of the media collector.
+
+\begin{figure*}[bth!]
 \centering
-\includegraphics[width=1.0\linewidth]{./architecture.pdf}
+\includegraphics[width=0.8\linewidth]{./architecture.pdf}
 \caption{Overview of the media collector: hybrid approach for the media item extraction process using a combination of API access and Web scraping}
 \label{fig:architecture}
 \end{figure*}
 
+\begin{lstlisting}[language=JavaScript,caption={Sample output of the media collector showing a \mbox{Google+} post (edited for legibility, URLs shortened).},label={lst:media}]
+{
+  "mediaurl": "http://t.co/ubagkiR9",
+  "storyurl": "https://t.co/dau5pBWD",
+  "message": {
+    "text": "My wife, who once said her vision of
+        heaven was being on the lawn bouncing
+        around beach balls at a Beach Boys
+        concert [...]
+        <a href=\"http://t.co/pH2OV1fW\" >
+        http://t.co/pH2OV1fW</a> [...]",
+    "clean": "My wife, who once said her vision of
+        heaven was being on the lawn bouncing
+        around beach balls at a Beach Boys
+        concert [...]"
+  },
+  "user": "https://t.co/gIf2UVZR",
+  "type": "photo",
+  "timestamp": 1329342797000,
+  "published": "2012-02-15T21:53:17.000Z"
+}
+\end{lstlisting}
+
 \subsection{Magazine Layout}
+In order to create the illusion of a real magazine,
+flipping from page to page needs to be as credible as possible.
+The open-source library turn.js by Emmanuel García~\cite{TurnJs2012}
+allows for the dynamic creation of magazines solely based on HTML5 technologies
+with a very realistic page flip effect.
+We treat each event as one page of the magazine,
+add the event metadata as headline and subheading of the page,
+and arrange the images and accompanying microposts to fill the page.
+For each event, we use the image with the highest resolution
+as background image of the page in order to create a lifestyle magazine appearance. 
 
 \subsection{Installation Instructions}
 
