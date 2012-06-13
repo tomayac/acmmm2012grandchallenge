@@ -177,11 +177,24 @@ function retrieveGeocodeResults(data) {
 // necessary
 // TODO: do more advanced sanitization for spammy titles with keyword stuffing
 function sanitizeEventTitle(title) {
+  // remove HTML tags
+  var tmp = document.createElement('div');
+  tmp.innerHTML = title;
+  title = tmp.textContent;
+  
   // remove punctuation and weird characters
+  title = title.replace('&nbsp;', ' ');
+  title = title.replace('&quot;', ' ');
+  title = title.replace('&apos;', ' ');
+  // w/ => with
+  title = title.replace(/\bw\/\s+/gi, 'with ');
+  // feat./ft. => featuring
+  title = title.replace(/\bf(ea)?t\.\s+/gi, 'featuring ');  
   title = title.replace(
-      /[\.,\-\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>]/g, '');
+      /[\.,\-–—―\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>]/g, ' ');
   // replace characters that can stand for "and" or "at" by space
   title = title.replace(/[&\+@]/g, ' ');
+  title = title.replace(/\s+/g, ' ');
   return title
 }
 
