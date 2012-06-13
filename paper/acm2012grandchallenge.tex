@@ -194,6 +194,17 @@ of the particular point or area of interest.
 In our implementation, we use the Google Geocoding API~\cite{Geocoding2012}.
 
 \subsection{Event Search}
+Based on a latitude and longitude pair, we search the before-mentioned
+event databases via their respective event search
+APIs~\cite{Eventful2012,Foursquare2012,GooglePlaces2012,Upcoming2012}
+for \emph{past} events within an empirically determined radius of five kilometers.
+We sanitize the event titles by removing HTML tags, punctuation,
+common abbreviations (like ``w/'', which becomes ``with'', or ``ft./feat.'',
+which become ``featuring'').
+As all events are geographically close, we deduplicate the returned set of events
+based on the simple, yet effective Levenshtein distance
+with an empirically determined editing distance of five,
+which catches things like ``Titanic'' and ``Titanic 3D'' for, \emph{e.g.}, movie events.
 
 \subsection{Media Search}
 
