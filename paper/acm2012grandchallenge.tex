@@ -58,6 +58,9 @@ framexbottommargin=-1em,
 \definecolor{grey}{RGB}{130,130,130}
 \newcommand{\linewrap}{\raisebox{-.6ex}{\textcolor{grey}{$\hookleftarrow$}}}
 
+% for 1st, 2nd, etc. superscripting
+\newcommand{\ts}{\textsuperscript}
+
 % more pleasing quote environment
 \usepackage{tikz}
 \newcommand*{\openquote}{\tikz[remember picture,overlay,xshift=-7pt,yshift=1pt]
@@ -115,6 +118,12 @@ A~screencast showcasing the application is also available\footnote{\todo{Add scr
 \subsection{Social Networks}
 
 \section{Related Work}
+Illustrating events with media items stemming from social networks
+is an active topic of research since the rise of social networking.
+In~\cite{brenner2012}, Brenner and Izquierdo present
+an approach to detect social events and retrieve associated photos
+in collaboratively annotated photo collections combining data of various modalities
+such as time, location, and textual and visual features.
 
 \section{Implementation}
 
@@ -126,11 +135,13 @@ A~screencast showcasing the application is also available\footnote{\todo{Add scr
 
 \subsection{Magazine Layout---Arranging Esthetically}
 
-\section{Demonstration}
-
 \subsection{Installation Instructions}
 
+\section{Experiments}
+
 \subsection{Query Examples}
+
+\subsection{Discussion}
 
 \section{Future Work and Conclusion}
 
