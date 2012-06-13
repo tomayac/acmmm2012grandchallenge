@@ -24,12 +24,25 @@ var htmlFactory = {
     // elegant: if the image returns an error (like 404 or 403), it
     // automagically removes itself from the DOM rather than showing a "broken
     // image" icon
-      return (storyurl? '<a href="' + storyurl + '">' : '') +
-             '<img class="event_media" ' +
+    var firstPart = description.substring(0, 250);
+    var expandPart = description.substr(250).split(/\s/);
+    var secondPart = expandPart[0];
+    expandPart = expandPart.slice(1).join(' ');
+    description = firstPart + secondPart + (expandPart? ' […]' : '');
+    var float;
+    if (Math.floor(Math.random() * 2) + 0) {
+      float = 'left';
+    } else {
+      float = 'right';
+    }
+    return '<div class="event_article">' +
+             (storyurl? '<a href="' + storyurl + '">' : '') +
+             '<img class="event_media_' + float + '" ' +
              'onerror="javascript:this.parentNode.removeChild(this);" ' +
-             'src="' + mediaurl +'" '+
-             'title="' + description + '" />' +
-             (storyurl? '</a>' : '');
+             'src="' + mediaurl +'" />'+               
+             (storyurl? '</a>' : '') +
+             '<div class="event_description">' + description + '</div>' +
+           '</div>';   
   }
 };
 
