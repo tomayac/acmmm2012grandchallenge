@@ -200,12 +200,13 @@ function sanitizeEventTitle(title) {
 
 // checks if an event with a similar title already exists from a different
 // event source
-// TODO: more advanced similarity checking, e.g., by calculating the
-// Levenshtein distance
 function eventWithSimilarTitleExists(title) {
   var lowerCaseTitle = title.toLowerCase();
-  if (eventTitles[lowerCaseTitle]) {
-    return true;
+  var titles = Object.keys(eventTitles);
+  for (var i = 0, len = titles.length; i < len; i++) {
+    if (levenshtein(titles[i], lowerCaseTitle) < 5) {
+      return true;
+    }
   }
   eventTitles[lowerCaseTitle] = true;
   return false;
@@ -311,10 +312,11 @@ function getUpcomingEvents(lat, long, query, formattedAddress) {
   var apiKey = '&api_key=' + UPCOMING_KEY;
   var query = '&search_text=' + encodeURIComponent(query);
   var location = '&location=' + lat + ',' + long;
+  var radius = '&radius=4';
   var format = '&format=json';
   var limit = '&per_page=10';
   var date = '&quick_date=this_week';
-  url += apiKey + query + location + format + limit + date;
+  url += apiKey + query + location + radius + format + limit + date;
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
@@ -370,7 +372,7 @@ function getEventfulEvents(lat, long, query, formattedAddress) {
   var location = '&location=' + lat + ',' + long;
   var category = '&category=music,festivals_parades,singles_social';
   var date = '&date=Last+Week';
-  var within = '&within=10';
+  var within = '&within=5';
   var units = '&units=km';
   var mature = '&mature=all';
   url += authentication + keywords + location + category + date + within +
@@ -435,7 +437,7 @@ function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
 // gets (places and) events from Google Places
 function getPlaces(lat, long, query) {
   var url = 'https://maps.googleapis.com/maps/api/place/search/json';
-  var radius = '?radius=1000';
+  var radius = '?radius=5000';
   var sensor = '&sensor=false';
   var location = '&location=' + lat + ',' + long;
   var keyword = '&keyword=' + encodeURIComponent(query);
