@@ -14,8 +14,7 @@ var htmlFactory = {
   event: function(eventId, title, start, image, source) {
     var ago = humaneDate(start);
     return  '<p class="event_title">' + title + '</p>' +
-            '<p><span class="event_source">' + source + '&mdash;</span> ' +
-            '<span class="event_time">' + ago + '</span></p>' +
+            '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
             '<p class="loading"><img src="spinner.gif"> ' +
             'This magazine page is being prepared…</p>';
