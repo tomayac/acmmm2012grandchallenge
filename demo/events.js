@@ -16,6 +16,7 @@ var htmlFactory = {
     return  '<p class="event_title">' + title + '</p>' +
             '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
+            '<div class="mag_footer">NiteOutMag™</div>' +
             '<p class="loading"><img src="spinner.gif"> ' +
             'This magazine page is being prepared…</p>';
           

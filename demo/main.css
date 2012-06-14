@@ -126,6 +126,22 @@ div.background img {
   right: 30px;
 }
 
+.mag_footer {
+  position: absolute;
+  font-family: Chango;
+  color: orange;
+  text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  background: black;
+  bottom: 0;
+  width: 100%;
+  font-size: .8em;
+  padding: 1px;
+}
+
 .event {
   padding: 1em;
   width: 100%:
