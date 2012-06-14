@@ -547,7 +547,7 @@ function setTitlePage(location) {
             { imgtype: 'photo', imgsz: 'xxlarge', q: location + ' nightlife' })
     .done(function (data) {
       var image = data.responseData.results[0].url;
-      $('.titlepage img.background').attr('src', image);
+      $('.titlepage .background img').attr('src', image);
       $('.mag_city').text(location);
       $('.controls').fadeOut();
     });
