@@ -107,7 +107,7 @@ div.background img {
       -1px 1px 0 #000,
       1px 1px 0 #000;
   position: absolute;
-  bottom: 50px;
+  bottom: 0;
   text-align: right;
   width: 100%;
   margin-left: -70px;
