@@ -551,7 +551,8 @@ function setTitlePage(location) {
       var image = data.responseData.results[0].url;
       $('.titlepage .background img').attr('src', image);
       $('.mag_city').text(location);
-      $('.controls').fadeOut();
+      $('.controls').hide();
+      $('.reload').show();
     });
 }
 
