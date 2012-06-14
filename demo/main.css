@@ -99,12 +99,17 @@ div.background img {
 }
 
 .mag_heading {
-  color: orange;
+  color: white;
   text-shadow:
       -1px -1px 0 #000,
       1px -1px 0 #000,
       -1px 1px 0 #000,
-      1px 1px 0 #000;  
+      1px 1px 0 #000;
+  position: absolute;
+  bottom: 50px;
+  text-align: right;
+  width: 100%;
+  margin-left: -70px;
 }
 
 .event {
