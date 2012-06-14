@@ -127,7 +127,8 @@ div.background img {
   text-align: justify;
   margin: 12px 0;
   float: left;  
-  display: inline;;
+  display: inline;
+  width: 100%;
 }
 
 .event_description {
