@@ -262,13 +262,6 @@ We propose a~common alignment schema, illustrated in
 \autoref{lst:media}, which shows the resulting metadata for an exemplary media item.
 \autoref{fig:architecture} shows the overall architecture of the media collector.
 
-\begin{figure*}[bh!]
-\centering
-\includegraphics[width=0.8\linewidth]{./architecture.pdf}
-\caption{Overview of the media collector: hybrid approach for the media item extraction process using a~combination of API access and Web scraping}
-\label{fig:architecture}
-\end{figure*}
-
 \begin{lstlisting}[language=JavaScript,caption={Sample output of the media collector showing a~\mbox{Google+} post (edited for legibility, URLs shortened).},label={lst:media}]
 {
   "mediaurl": "http://t.co/ubagkiR9",
@@ -291,6 +284,13 @@ We propose a~common alignment schema, illustrated in
   "published": "2012-02-15T21:53:17.000Z"
 }
 \end{lstlisting}
+
+\begin{figure*}[htb!]
+\centering
+\includegraphics[width=0.8\linewidth]{./architecture.pdf}
+\caption{Overview of the media collector: hybrid approach for the media item extraction process using a~combination of API access and Web scraping}
+\label{fig:architecture}
+\end{figure*}
 
 \subsection{Magazine Layout}
 In order to create the illusion of a~real magazine,
@@ -322,10 +322,8 @@ We have evaluated our application with the top ten list of
 United States cities by
 population\footnote{\url{http://en.wikipedia.org/wiki/List_of_United_States_cities_by_population}}
 with promising results.
-\autoref{fig:screenshot} shows an example screenshot of the application
-with two events from Las Vegas.
 
-\begin{figure}[bth!]
+\begin{figure}[b!]
 \centering
 \includegraphics[width=1.0\columnwidth]{./screenshot.jpg}
 \caption{Screenshot of the NiteOutMag\texttrademark application with two events from Las Vegas and the righthand-side page about to be flipped}
@@ -338,7 +336,8 @@ reveal good results due to the high density of events.
 Popular examples are among others
 (\emph{Fisherman's Wharf, San Francisco}),
 (\emph{Times Square, New York}),
-or (\emph{Piccadilly Circus, London}).	
+(\emph{Piccadilly Circus, London}),
+or simply (\emph{Ibiza}).	
 A~manually compiled list of America's top party cities
 from the magazine Maxim\footnote{\url{http://www.maxim.com/movies/americas-top-10-party-cities}}
 also reveals interesting results.
@@ -373,7 +372,16 @@ We will investigate ways to improve the application's responsiveness
 in the future.
 
 \section{Conclusion}
-
+In this paper, we have reported on a~Chrome Web application that
+illustrates events via four event databases and eleven SNSs.
+The application harvests event-related data on-the-fly for
+a~user-determined center of interest and compiles the data
+in an esthetic lifestyle magazine-like way.
+Via popular party destinations, big cities, and places of interests,
+we have evaluated the retrieved results for both relevancy and
+visual appeal, with a~special focus on optimized recall.
+While there are actionable issues for future work,
+we are quite happy with the outcome so far.
 
 % \section{Acknowledgments}
 % Double-blind review process, need to remove for now
