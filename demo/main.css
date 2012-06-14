@@ -142,6 +142,11 @@ div.background img {
   padding: 1px;
 }
 
+.event_tiny_image {
+  float: right;
+  margin-top: -1.6em;
+}
+
 .event {
   padding: 1em;
   width: 100%:
