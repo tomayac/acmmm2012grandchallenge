@@ -16,7 +16,9 @@ var htmlFactory = {
     return  '<p class="event_title">' + title + '</p>' +
             '<p><span class="event_source">' + source + '&mdash;</span> ' +
             '<span class="event_time">' + ago + '</span></p>' +
-            '<img class="event_tiny_image" src="' + image + '" />';
+            '<img class="event_tiny_image" src="' + image + '" />' +
+            '<p class="loading"><img src="spinner.gif"> ' +
+            'This magazine page is being prepared…</p>';
           
   },
   // the individual images that illustrate an event
@@ -531,6 +533,7 @@ function addPage(pageHtml) {
 
 function addPageContent(page, contentHtml) {
   var content = page.find('.content');
+  content.find('.loading').hide();
   content.html(content.html() + contentHtml);
 }
 
