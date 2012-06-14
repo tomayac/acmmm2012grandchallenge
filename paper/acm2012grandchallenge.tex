@@ -1,9 +1,7 @@
 \documentclass{acm_proc_article-sp}
 
 \usepackage[utf8]{inputenc}
-
 \usepackage[T1]{fontenc}
-
 \usepackage[activate=compatibility]{microtype}
 
 % autoref command
@@ -13,12 +11,10 @@
 \def\subfloatautorefname{Subfigure}
 
 \usepackage[lofdepth,lotdepth]{subfig}
-
 \usepackage{enumitem}
-
 \usepackage{textcomp}
-
 \usepackage{mathtools}
+\usepackage{url}
 
 % give emph a normal fontsize
 \let\oldemph\emph
@@ -165,7 +161,7 @@ is out of bounds for this paper.
 We point the reader to, \emph{e.g.},~\cite{Petkos2012} by Petkos \emph{et al.},
 which is a~typical example of event detection based on multimodal clustering.
 For our purposes, event databases as listed below are adequate.
- 
+
 \subsection{Event Databases}
 An event database is an online service that holds metadata
 for a~categorized set of events that can be queried programmatically.
@@ -236,7 +232,7 @@ In addition to that, as our approach covers more SNSs than Twitter,
 we need to consider that not all SNSs support geotagging of content.
 In consequence, we use a~two-tier approach for media search,
 illustrated by a~real event of a~Beach Boys
-concert\footnote{\url{http://www.thebeachboys.com/#tour}}
+concert\footnote{\url{http://www.thebeachboys.com/\#tour}}
 in the Merriweather Post Pavilion in Columbia, MD.
 The event name is \emph{Beach Boys},
 the venue name is \emph{Merriweather Post Pavilion},
@@ -315,7 +311,7 @@ for the (human-friendly address) $+$ the keyword (nightlife).
 \subsection{Installation Instructions}
 The NiteOutMag\texttrademark application requires the Chrome browser.
 Download the application from the URL \todo{Add demo link} to the local file system.
-Once there, drag and drop it into the \url{chrome://chrome/extensions/} page in the browser. 
+Once there, drag and drop it into the \url{chrome://chrome/extensions/} page in the browser.
 When you drop it on the extensions page, you will notice an install option popping up there.
 When you agree to install, you will see the standard installation dialog
 that informs you about the rights that the application is requesting.
@@ -358,9 +354,9 @@ Detection of such stuffed titles is difficult and needs more work.
 
 Event deduplication is a~second issue.
 The two movie events \emph{The Avengers} and
-\emph{Marvel's The Avengers 3D} are the same for a human being,
-however, for a machine, the duplication is harder to detect.
-Media item deduplication is a task that we have left for future work.
+\emph{Marvel's The Avengers 3D} are the same for a~human being,
+however, for a~machine, the duplication is harder to detect.
+Media item deduplication is a~task that we have left for future work.
 
 The system's response time is improvable.
 The main issue here is the browser-enforced maximum number
@@ -379,7 +375,7 @@ in the future.
 \section{Conclusion}
 
 
-% \section{Acknowledgments} 
+% \section{Acknowledgments}
 % Double-blind review process, need to remove for now
 
 \bibliographystyle{abbrv}
