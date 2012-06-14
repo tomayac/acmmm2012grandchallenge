@@ -131,7 +131,6 @@ A~screencast showcasing the application is also available\footnote{\todo{Add scr
 
 %\keywords{}
 
-
 \section{Introduction}
 In March 2012, the at the time 901 million monthly active users
 of the social networking site (SNS) Facebook
@@ -206,12 +205,12 @@ The application focuses on events that occurred in a~certain area.
 While event databases tend to work based on concrete points like
 \mbox{(40.7590110, -73.98447220)}, \emph{i.e.},
 latitude and longitude pairs, human beings use more human-friendly place references
-like ``Times Square, New York''.
+like \emph{Times Square, New York}.
 Geocoding is the process of finding associated geographic coordinates
 (often expressed as latitude and longitude) from other geographic data,
 such as street addresses, or zip codes.
 The user can enter an exact address, such as
-``618 W. 46th St, New York, NY 10036'', or a~very broad area like ``Las Vegas''.
+\emph{618 W. 46th St, New York, NY 10036}, or a~very broad area like \emph{Las Vegas}.
 The returned latitude and longitude pair is always the center
 of the particular point or area of interest.
 In our implementation, we use the Google Geocoding API~\cite{Geocoding2012}.
@@ -222,14 +221,14 @@ event databases via their respective event search
 APIs~\cite{Eventful2012,Foursquare2012,GooglePlaces2012,Upcoming2012}
 for \emph{past} events within an empirically determined radius of five kilometers.
 We sanitize the event titles by removing HTML tags, punctuation,
-common abbreviations (like ``w/'', which becomes ``with'', or ``ft./feat.'',
-which become ``featuring'').
+common abbreviations (like \emph{w/}, which becomes \emph{with}, or \emph{ft./feat.},
+which becomes \emph{featuring}).
 As all events are geographically close, we deduplicate the returned set of events
 based on the simple, yet effective Levenshtein distance
 with an empirically determined editing distance of five,
-which catches things like ``Titanic'' and ``Titanic 3D'' for, \emph{e.g.}, movie events.
+which catches things like \emph{Titanic} and \emph{Titanic 3D} for, \emph{e.g.}, movie events.
 
-\subsection{Media Search}
+\subsection{Media Search} \label{sec:media-search}
 Unlike event search, media search in our application is \emph{not} based on geolocation.
 According to a~study performed in May 2012 by Seline~\cite{Quora2012},
 only roughly 1\% of all microposts on Twitter are geotagged.
@@ -256,7 +255,10 @@ The two-tier approach consists thus of a~full-text search for:
 
 We have implemented a~media collector consisting of media extractors for all SNSs
 listed in \autoref{sec:social-networks}.
-The media collector takes as an input a~search term, \emph{e.g.},
+% DOUBLE-BLIND REVIEW
+% This media collector was first described in~\cite{Khrouf2012}.
+% DOUBLE-BLIND REVIEW
+It takes a~search term as input, \emph{e.g.},
 \emph{Beach Boys Columbia} for the example above,
 and then performs a~parallel full-text search using the search APIs of all SNSs.
 When all the media extractors have responded, a~unified SNS-agnostic output is delivered.
@@ -264,7 +266,7 @@ We propose a~common alignment schema, illustrated in
 \autoref{lst:media}, which shows the resulting metadata for an exemplary media item.
 \autoref{fig:architecture} shows the overall architecture of the media collector.
 
-\begin{figure*}[bth!]
+\begin{figure*}[bh!]
 \centering
 \includegraphics[width=0.8\linewidth]{./architecture.pdf}
 \caption{Overview of the media collector: hybrid approach for the media item extraction process using a~combination of API access and Web scraping}
@@ -304,7 +306,11 @@ We treat each event as one page of the magazine,
 add the event metadata as headline and subheading of the page,
 and arrange the images and accompanying microposts to fill the page.
 For each event, we use the image with the highest resolution
-as background image of the page in order to create a~lifestyle magazine appearance. 
+as background image of the page in order to create a~lifestyle magazine appearance.
+For additional print-like look and feel, we use drop caps,
+as can be seen in \autoref{fig:screenshot}.
+The title page gets dynamically created based on a~Google image search
+for the (human-friendly address) $+$ the keyword (nightlife).
 
 \subsection{Installation Instructions}
 The NiteOutMag\texttrademark application requires the Chrome browser.
@@ -316,16 +322,65 @@ that informs you about the rights that the application is requesting.
 It needs access to the before-mentioned event databases and media search APIs.
 
 \section{Experiments}
+We have evaluated our application with the top ten list of
+United States cities by
+population\footnote{\url{http://en.wikipedia.org/wiki/List_of_United_States_cities_by_population}}
+with promising results.
+\autoref{fig:screenshot} shows an example screenshot of the application
+with two events from Las Vegas.
+
+\begin{figure}[bth!]
+\centering
+\includegraphics[width=1.0\columnwidth]{./screenshot.jpg}
+\caption{Screenshot of the NiteOutMag\texttrademark application with two events from Las Vegas and the righthand-side page about to be flipped}
+\label{fig:screenshot}
+\end{figure}
 
 \subsection{Query Examples}
+In general, big cities and well-known places of interest
+reveal good results due to the high density of events.
+Popular examples are among others
+(\emph{Fisherman's Wharf, San Francisco}),
+(\emph{Times Square, New York}),
+or (\emph{Piccadilly Circus, London}).	
+A~manually compiled list of America's top party cities
+from the magazine Maxim\footnote{\url{http://www.maxim.com/movies/americas-top-10-party-cities}}
+also reveals interesting results.
 
-\subsection{Discussion}
+\subsection{Discussion and Future Work}
+The results stand and fall with the quality of the events
+in the event databases.
+One problem are stuffed event titles like
+\emph{Kandyland 2012 @ the Playboy Mansion -- 1.877.VIP.MANS\-ION}\footnote{\url{http://t.co/YUm7FtmE}},
+where the actual event title gets combined with the venue name
+and a~vanity contact phone number.
+Detection of such stuffed titles is difficult and needs more work.
 
-\section{Future Work and Conclusion}
+Event deduplication is a~second issue.
+The two movie events \emph{The Avengers} and
+\emph{Marvel's The Avengers 3D} are the same for a human being,
+however, for a machine, the duplication is harder to detect.
+Media item deduplication is a task that we have left for future work.
+
+The system's response time is improvable.
+The main issue here is the browser-enforced maximum number
+of simultaneous HTTP requests.
+With our current four event sources that we have limited
+to ten events per source, we already have up to forty events
+that we need to search media items for.
+As outlined before in \autoref{sec:media-search},
+we have opted for a~two-tier approach in order to improve the recall,
+which effectively means two search requests per event.
+Assuming that for each search request we get on average only two media items,
+we have roundabout $5+40*2*2=165$ HTTP requests for only one magazine.
+We will investigate ways to improve the application's responsiveness
+in the future.
+
+\section{Conclusion}
+
 
 % \section{Acknowledgments} 
 % Double-blind review process, need to remove for now
-
 
 \bibliographystyle{abbrv}
 \bibliography{acm2012grandchallenge}
