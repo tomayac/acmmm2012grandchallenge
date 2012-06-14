@@ -3,22 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>events.js</string>
+	<string>main.css</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>events.js</string>
 			<key>lastUsed</key>
-			<date>2012-06-13T12:18:37Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2012-06-14T02:06:48Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>index.html</string>
 			<key>lastUsed</key>
-			<date>2012-06-12T23:05:23Z</date>
+			<date>2012-06-14T02:06:51Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -30,7 +28,15 @@
 			<key>filename</key>
 			<string>main.css</string>
 			<key>lastUsed</key>
-			<date>2012-06-13T12:18:37Z</date>
+			<date>2012-06-14T02:06:51Z</date>
+			<key>selected</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>filename</key>
+			<string>levenshtein.js</string>
+			<key>lastUsed</key>
+			<date>2012-06-13T13:37:23Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -42,42 +48,88 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>38</integer>
+				<integer>71</integer>
 				<key>line</key>
-				<integer>195</integer>
+				<integer>545</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>169</integer>
+			<integer>526</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>66</integer>
+				<key>line</key>
+				<integer>545</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>71</integer>
+				<key>line</key>
+				<integer>545</integer>
+			</dict>
 		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>32</integer>
+				<integer>28</integer>
 				<key>line</key>
-				<integer>21</integer>
+				<integer>33</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
+			<integer>1</integer>
+		</dict>
+		<key>levenshtein.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>15</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
 			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
 		</dict>
 		<key>main.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>50</integer>
+				<integer>13</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>33</integer>
+			<integer>0</integer>
 		</dict>
 		<key>manifest.json</key>
 		<dict>
@@ -98,12 +150,13 @@
 	<array>
 		<string>index.html</string>
 		<string>events.js</string>
+		<string>levenshtein.js</string>
 		<string>main.css</string>
 		<string>manifest.json</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{203, 71}, {1067, 719}}</string>
+	<string>{{210, 59}, {1070, 719}}</string>
 </dict>
 </plist>
