@@ -36,7 +36,7 @@ var htmlFactory = {
       float = 'right';
     }
     return '<div class="event_article">' +
-             (storyurl? '<a href="' + storyurl + '">' : '') +
+             (storyurl? '<a href="' + storyurl + '" target="_blank">' : '') +
              '<img class="event_media_' + float + '" ' +
              'onerror="javascript:this.parentNode.removeChild(this);" ' +
              'src="' + mediaurl +'" />'+               
