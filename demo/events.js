@@ -134,7 +134,7 @@ function createRandomId() {
 
 // resets the GUI and central variables
 function reset() {
-  eventTitles = {};
+  eventTitles = [];
   eventMediaItems = {};
   pendingAjaxRequests = 0;
   // initialize the flipbook
@@ -220,15 +220,15 @@ function sanitizeEventTitle(title) {
 // checks if an event with a similar title already exists from a different
 // event source
 function eventWithSimilarTitleExists(title) {
-  var lowerCaseTitle = title.toLowerCase();
-  var titles = Object.keys(eventTitles);
-  for (var i = 0, len = titles.length; i < len; i++) {
-    if (levenshtein(titles[i], lowerCaseTitle) < 5) {
-      return true;
-    }
-  }
-  eventTitles[lowerCaseTitle] = true;
-  return false;
+  // lowercase and sort words in title
+  title = title.toLowerCase().split(/\s+/).sort().join(' ');
+  // look for titles with a small absolute or relativce levenshtein distance
+  var found = eventTitles.some(function (existingTitle) {
+    var distance = levenshtein(title, existingTitle);
+    return (distance < 8) || (distance / (existingTitle + 1) < 0.2);
+  });
+  eventTitles.push(title);
+  return found;
 }
 
 // gets events from Foursquare
