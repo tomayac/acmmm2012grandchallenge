@@ -55,8 +55,6 @@ var htmlFactory = {
 var searchButton = document.getElementById('do_search');
 var locationInput = document.getElementById('location_search');
 var eventsFlipbook = document.getElementById('flipbook');
-var spinnerImage =  document.getElementById('spinner');
-var progressSpan = document.getElementById('progress');
 
 // used to store existing events when working with multiple event sources
 // in order to avoid event duplication
@@ -72,20 +70,9 @@ var eventPages = {};
 var pendingAjaxRequests = 0;
 function requestSent(requestId) {
   pendingAjaxRequests++;
-  updateProgress(pendingAjaxRequests);
-  spinnerImage.style.display = 'inline';
-  progress.style.display = 'inline';
 }
 function requestReceived(requestId) {
   pendingAjaxRequests--;
-  updateProgress(pendingAjaxRequests);
-  if (pendingAjaxRequests === 0) {
-    spinnerImage.style.display = 'none';
-    progress.style.display = 'none';
-  }
-}
-function updateProgress(pendingAjaxRequests) {
-  progressSpan.innerHTML = pendingAjaxRequests + ' pending items to go.';
 }
 
 // add logic to the search button
