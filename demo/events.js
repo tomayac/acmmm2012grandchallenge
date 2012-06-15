@@ -7,13 +7,17 @@ var FOURSQUARE_KEY = {
   clientId: 'DQI0ZMEUX0PWZZ3WXCKIZLVK1JSPMCJITAASGBIICHJZ0DY5',
   clientSecret: 'Q11RIEPAZ2VXQLYWSHZ1GRJHM3QR43HCSS42TH51H0YDVTTL'
 };
+var LOCATION_KEY;
+var PAGE_COUNTER = 0;
 
 // this objects serves as a central "templating engine" for all generated HTML
 var htmlFactory = {
   // the container for an event
   event: function(eventId, title, start, image, source) {
+    PAGE_COUNTER ++;    
     var ago = humaneDate(start);
-    return  '<p class="event_title">' + title + '</p>' +
+    return  '<p class="mag-header">'+ PAGE_COUNTER + ' - ' + LOCATION_KEY+'</p>'+
+            '<p class="event_title">' + title + '</p>' +
             '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
             '<div class="mag_footer">NiteOutMag™</div>' +
@@ -151,6 +155,7 @@ function geocode(location) {
   var url = 'https://maps.googleapis.com/maps/api/geocode/json';
   var sensor = '?sensor=false';
   var address = '&address=' + encodeURIComponent(location);
+  LOCATION_KEY = location;
   url += sensor + address;
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
