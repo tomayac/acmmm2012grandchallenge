@@ -79,6 +79,7 @@ div.background img {
   z-index: 100;
   height: 90%;
   width: 90%;
+  overflow-y:auto;
 }
 
 .mag_title {
@@ -142,6 +143,8 @@ div.background img {
   width: 90%;
   font-size: .8em;
   padding: 1px;
+  z-index: 100;
+  margin-left: 5%;
 }
 
 .mag-header {
@@ -228,4 +231,18 @@ div.background img {
   float: right;
   margin-left: 5px;
   border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.9); 
 }

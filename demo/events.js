@@ -20,7 +20,6 @@ var htmlFactory = {
             '<p class="event_title">' + title + '</p>' +
             '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
-            '<div class="mag_footer">NiteOutMag™</div>' +
             '<p class="loading"><img src="spinner.gif"> ' +
             'This magazine page is being prepared…</p>';
           
@@ -531,10 +530,12 @@ function getTeleportdMediaItems(title, lat, long, eventId, eventHtml) {
 // adds a new page to the flipbook and returns it
 function addPage(pageHtml) {
   var page = $('<div class="page">')
-                .append($('<div class="content">').html(pageHtml));
+                .append($('<div class="content">').html(pageHtml))
+                .append('<div class="mag_footer">NiteOutMag™</div>');
   $('#flipbook').turn('addPage', page);
   return page;
 }
+
 
 function addPageContent(page, contentHtml) {
   var content = page.find('.content');
