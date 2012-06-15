@@ -124,6 +124,8 @@ div.background img {
   position: absolute;
   bottom: 0;
   right: 30px;
+  text-align: right;
+  width: 50%;
 }
 
 .mag_footer {
