@@ -14,9 +14,9 @@ var PAGE_COUNTER = 0;
 var htmlFactory = {
   // the container for an event
   event: function(eventId, title, start, image, source) {
-    PAGE_COUNTER ++;    
+//    PAGE_COUNTER ++;    
     var ago = humaneDate(start);
-    return  '<p class="mag-header">'+ PAGE_COUNTER + ' - ' + LOCATION_KEY+'</p>'+
+    return  '<p class="mag-header"> ' + LOCATION_KEY + ' </p>'+
             '<p class="event_title">' + title + '</p>' +
             '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
@@ -94,7 +94,7 @@ searchButton.addEventListener('click', function() {
   searchButton.style.display = 'none';
   var location = locationInput.value;
   if (location) {
-    geocode(location);    
+    geocode(location);
   }
   return false;
 }, false);
@@ -458,6 +458,8 @@ function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
         eventHtml);
         
   }
+
+
 }
 
 // gets (places and) events from Google Places
