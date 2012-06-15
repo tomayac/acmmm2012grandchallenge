@@ -251,44 +251,23 @@ It takes a search term as input, \emph{e.g.}, \emph{Beach Boys Columbia} for the
 \begin{figure*}[htb!]
 \centering
 \includegraphics[width=0.8\linewidth]{./architecture.pdf}
-\caption{Overview of the media collector: hybrid approach for the media item extraction process using a~combination of API access and Web scraping}
+\caption{Overview of the media collector: hybrid approach for the media item extraction process using a combination of API access and Web scraping}
 \label{fig:architecture}
 \end{figure*}
 
 \subsection{Magazine Layout}
-In order to create the illusion of a~real magazine,
-flipping from page to page needs to be as credible as possible.
-The open-source library turn.js by Emmanuel García~\cite{TurnJs2012}
-allows for the dynamic creation of magazines solely based on HTML5 technologies
-with a~very realistic page flip effect.
-We treat each event as one page of the magazine,
-add the event metadata as headline and subheading of the page,
-and arrange the images and accompanying microposts to fill the page.
-For each event, we use the image with the highest resolution
-as background image of the page in order to create a~lifestyle magazine appearance.
-For additional print-like look and feel, we use drop caps,
-as can be seen in \autoref{fig:screenshot}.
-The title page gets dynamically created based on a~Google image search
-for the (human-friendly address) $+$ the keyword (nightlife).
+In order to create the illusion of a real magazine, the ability of flipping from page to page needs to be as credible as possible. The open-source library \texttt{turn.js} by Emmanuel García~\cite{TurnJs2012} allows for the dynamic creation of magazines solely based on HTML5 technologies with a very realistic page flip effect. We treat each event as one page of the magazine, add the event metadata as headline and subheading of the page, and arrange the images and accompanying microposts to fill up the page as illustration. For each event, we use the image with the highest resolution as background image of the page in order to create a lifestyle magazine appearance. For additional print-like look and feel, we use drop caps (\autoref{fig:screenshot}). The title page gets dynamically created based on a~Google image search for the (human-friendly address) $+$ the keyword (nightlife).
 
 \subsection{Installation Instructions}
-The NiteOutMag\texttrademark application requires the Chrome browser.
-Download the application from the URL \url{http://goo.gl/fjuE5} to the local file system.
-Once there, drag and drop it into the \url{chrome://chrome/extensions/} page in the browser.
-When you drop it on the extensions page, you will notice an install option popping up there.
-When you agree to install, you will see the standard installation dialog
-that informs you about the rights that the application is requesting.
-It needs access to the before-mentioned event databases and media search APIs.
+The NiteOutMag\texttrademark application requires the Chrome browser. Download the application from the URL \url{http://goo.gl/fjuE5} to the local file system.
+Once there, drag and drop it into the \url{chrome://chrome/extensions/} page in the browser. When you drop it on the extensions page, you will notice an install option popping up. When you agree to install, you will see the standard installation dialog that informs you about the rights that the application is requesting. It needs access to the event databases and media search APIs we have mentioned before.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%%  4. Experiments  %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Experiments}                                                       \label{sec:experiments}
-We have evaluated our application with the top ten list of
-United States cities by
-population\footnote{\url{http://en.wikipedia.org/wiki/List_of_United_States_cities_by_population}}
-with promising results.
+We have evaluated our application with the top ten list of United States cities by population\footnote{\url{http://en.wikipedia.org/wiki/List_of_United_States_cities_by_population}} with promising results.
 
 \begin{figure}[b!]
 \centering
@@ -298,61 +277,24 @@ with promising results.
 \end{figure}
 
 \subsection{Query Examples}
-In general, big cities and well-known places of interest
-reveal good results due to the high density of events.
-Popular examples are among others
-(\emph{Fisherman's Wharf, San Francisco}),
-(\emph{Times Square, New York}),
-(\emph{Piccadilly Circus, London}),
-or simply (\emph{Ibiza}).	
-A~manually compiled list of America's top party cities
-from the magazine Maxim\footnote{\url{http://www.maxim.com/movies/americas-top-10-party-cities}}
-also reveals interesting results.
+In general, big cities and well-known places of interest reveal good results due to the high density of events. Popular examples are among others (\emph{Fisherman's Wharf, San Francisco}), (\emph{Times Square, New York}), (\emph{Piccadilly Circus, London}), or simply (\emph{Ibiza}). A manually compiled list of America's top party cities from the magazine Maxim\footnote{\url{http://www.maxim.com/movies/americas-top-10-party-cities}} also reveals interesting results.
 
 \subsection{Discussion and Future Work}
-The results stand and fall with the quality of the events
-in the event databases.
-One problem are stuffed event titles like
-\emph{Kandyland 2012 @ the Playboy Mansion -- 1.877.VIP.MANS\-ION}\footnote{\url{http://t.co/YUm7FtmE}},
-where the actual event title gets combined with the venue name
-and a~vanity contact phone number.
-Detection of such stuffed titles is difficult and needs more work.
+The results stand and fall with the quality of the events in the event databases. One of the problem we encounter are event titles such as
+\emph{Kandyland 2012 @ the Playboy Mansion -- 1.877.VIP.MANSION}\footnote{\url{http://t.co/YUm7FtmE}} which combine the event name with the venue name
+and a vanity contact phone number. The detection of such composed titles is difficult and requires advanced linguistic processing.
 
-Event deduplication is a~second issue.
-The two movie events \emph{The Avengers} and
-\emph{Marvel's The Avengers 3D} are the same for a~human being,
-however, for a~machine, the duplication is harder to detect.
-Media item deduplication is a~task that we have left for future work.
+Event deduplication is a second issue. The two movie events \emph{The Avengers} and \emph{Marvel's The Avengers 3D} are the same for a human being. However, for a machine, the duplication is harder to detect. Media item deduplication is a task that we have left for future work.
 
-The system's response time is improvable.
-The main issue here is the browser-enforced maximum number
-of simultaneous HTTP requests.
-With our current four event sources that we have limited
-to ten events per source, we already have up to forty events
-that we need to search media items for.
-As outlined before in \autoref{sec:media-search},
-we have opted for a~two-tier approach in order to improve the recall,
-which effectively means two search requests per event.
-Assuming that for each search request we get on average only two media items,
-we have roundabout $5+40*2*2=165$ HTTP requests for only one magazine.
-We will investigate ways to improve the application's responsiveness
-in the future.
+The system's response time is improvable. The main issue here is the browser-enforced maximum number of simultaneous HTTP requests. With our current four event sources that we have limited to ten events per source, we already have up to forty events that we need to search media items for. As outlined before in the \autoref{sec:media-search}, we have opted for a~two-tier approach in order to improve the recall, which effectively means two search requests per event.
+Assuming that for each search request we get on average only two media items, we have roundabout $5+40*2*2=165$ HTTP requests for only one magazine. We will investigate ways to improve the application's responsiveness in the future.
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%%  5. Conclusion  %%%
 %%%%%%%%%%%%%%%%%%%%%%
 
 \section{Conclusion}                                                        \label{sec:conclusion}
-In this paper, we have reported on a~Chrome Web application that
-illustrates events via four event databases and eleven SNSs.
-The application harvests event-related data on-the-fly for
-a~user-determined center of interest and compiles the data
-in an esthetic lifestyle magazine-like way.
-Via popular party destinations, big cities, and places of interests,
-we have evaluated the retrieved results for both relevancy and
-visual appeal, with a~special focus on optimized recall.
-While there are actionable issues for future work,
-we are quite happy with the outcome so far.
+In this paper, we have reported on a~Chrome Web application that illustrates events via four event databases and eleven social networks and media sharing platforms. The application harvests event-related data on-the-fly for a user-determined center of interest and compiles the data in an esthetic lifestyle magazine. Using popular party destinations, big cities, and places of interests, we have evaluated the retrieved results for both relevancy and visual appeal, with a special focus on optimized recall. While there are actionable issues for future work, we are quite happy with the outcome so far.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Acknowledgments  %%%
