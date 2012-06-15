@@ -55,8 +55,6 @@ var htmlFactory = {
 var searchButton = document.getElementById('do_search');
 var locationInput = document.getElementById('location_search');
 var eventsFlipbook = document.getElementById('flipbook');
-var spinnerImage =  document.getElementById('spinner');
-var progressSpan = document.getElementById('progress');
 
 // used to store existing events when working with multiple event sources
 // in order to avoid event duplication
@@ -72,20 +70,9 @@ var eventPages = {};
 var pendingAjaxRequests = 0;
 function requestSent(requestId) {
   pendingAjaxRequests++;
-  updateProgress(pendingAjaxRequests);
-  spinnerImage.style.display = 'inline';
-  progress.style.display = 'inline';
 }
 function requestReceived(requestId) {
   pendingAjaxRequests--;
-  updateProgress(pendingAjaxRequests);
-  if (pendingAjaxRequests === 0) {
-    spinnerImage.style.display = 'none';
-    progress.style.display = 'none';
-  }
-}
-function updateProgress(pendingAjaxRequests) {
-  progressSpan.innerHTML = pendingAjaxRequests + ' pending items to go.';
 }
 
 // add logic to the search button
@@ -186,7 +173,8 @@ function retrieveGeocodeResults(data) {
     getEventfulEvents(coords.lat, coords.lng, '', location.formatted_address);
     getUpcomingEvents(coords.lat, coords.lng, '', location.formatted_address);
     locationInput.value = location.formatted_address;
-    setTitlePage(location.formatted_address.split(',')[0]);
+    LOCATION_KEY = location.formatted_address.split(',')[0];
+    setTitlePage(LOCATION_KEY);
   } else {
     // TODO: error handling
   }
@@ -560,8 +548,11 @@ function setTitlePage(location) {
       var image = data.responseData.results[0].url;
       $('.titlepage .background img').attr('src', image);
       $('.mag_city, .city').text(location);
+      for(var pageId in eventPages) {
+        eventPages[pageId].find('.mag-header').text(location);
+      }
       $('.controls').hide();
-      $('.reload, .mag_heading').show();
+      $('.reload, .mag_header').show();
     });
 }
 
