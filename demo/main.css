@@ -137,9 +137,22 @@ div.background img {
       1px 1px 0 #000;
   background: black;
   bottom: 0;
-  width: 100%;
+  width: 90%;
   font-size: .8em;
   padding: 1px;
+}
+
+.mag-header{
+  position: absolute;
+  font-family: Chango;
+  color: orange;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  background: black;
+  top: 0;
+  width: 90%;
+  font-size: .8em;
+  padding: 1px;
+  text-align:center;
 }
 
 .event_tiny_image {
@@ -214,17 +227,4 @@ div.background img {
   float: right;
   margin-left: 5px;
   border-radius: 5px;
-}
-
-.mag-header{
-  position: absolute;
-  font-family: Chango;
-  color: orange;
-  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-  background: black;
-  top: 0;
-  width: 100%;
-  font-size: .8em;
-  padding: 1px;
-  text-align:center;
 }
