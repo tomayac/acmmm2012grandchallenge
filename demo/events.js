@@ -556,9 +556,9 @@ function setTitlePage(location) {
     .done(function (data) {
       var image = data.responseData.results[0].url;
       $('.titlepage .background img').attr('src', image);
-      $('.mag_city').text(location);
+      $('.mag_city, .city').text(location);
       $('.controls').hide();
-      $('.reload').show();
+      $('.reload, .mag_heading').show();
     });
 }
 
