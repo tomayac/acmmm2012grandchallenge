@@ -144,17 +144,16 @@ div.background img {
   padding: 1px;
 }
 
-.mag-header{
+.mag-header {
   position: absolute;
   font-family: Chango;
   color: orange;
   text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
-  background: black;
-  top: 0;
+  top: 10px;
   width: 90%;
   font-size: .8em;
   padding: 1px;
-  text-align:center;
+  text-align: right;
 }
 
 .event_tiny_image {
@@ -201,7 +200,7 @@ div.background img {
   text-shadow: 2px 2px 3px rgba(0,0,0,.5);
   background-color: black;
   width: 100%;
-  margin: 0;  
+  margin: 10px 0 0 0;  
 }
 
 .event_details {
