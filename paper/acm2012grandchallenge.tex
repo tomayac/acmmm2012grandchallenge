@@ -222,13 +222,8 @@ We have implemented a media collector consisting of media extractors for all SNS
 % DOUBLE-BLIND REVIEW
 % This media collector was first described in~\cite{Khrouf2012}.
 % DOUBLE-BLIND REVIEW
-It takes a~search term as input, \emph{e.g.},
-\emph{Beach Boys Columbia} for the example above,
-and then performs a~parallel full-text search using the search APIs of all SNSs.
-When all the media extractors have responded, a~unified SNS-agnostic output is delivered.
-We propose a~common alignment schema, illustrated in
-\autoref{lst:media}, which shows the resulting metadata for an exemplary media item.
-\autoref{fig:architecture} shows the overall architecture of the media collector.
+It takes a search term as input, \emph{e.g.}, \emph{Beach Boys Columbia} for the example above, and then performs a parallel full-text search using the search APIs of all SNSs. When all the media extractors have responded, a unified SNS-agnostic output is delivered. We propose a common alignment schema, illustrated in
+\autoref{lst:media}, which shows the resulting metadata for an exemplary media item. The \autoref{fig:architecture} depicts the overall architecture of the media collector.
 
 \begin{lstlisting}[language=JavaScript,caption={Sample output of the media collector showing a~\mbox{Google+} post (edited for legibility, URLs shortened).},label={lst:media}]
 {
