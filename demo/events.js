@@ -186,7 +186,8 @@ function retrieveGeocodeResults(data) {
     getEventfulEvents(coords.lat, coords.lng, '', location.formatted_address);
     getUpcomingEvents(coords.lat, coords.lng, '', location.formatted_address);
     locationInput.value = location.formatted_address;
-    setTitlePage(location.formatted_address.split(',')[0]);
+    LOCATION_KEY = location.formatted_address.split(',')[0];
+    setTitlePage(LOCATION_KEY);
   } else {
     // TODO: error handling
   }
@@ -560,8 +561,11 @@ function setTitlePage(location) {
       var image = data.responseData.results[0].url;
       $('.titlepage .background img').attr('src', image);
       $('.mag_city, .city').text(location);
+      for(var pageId in eventPages) {
+        eventPages[pageId].find('.mag-header').text(location);
+      }
       $('.controls').hide();
-      $('.reload, .mag_heading').show();
+      $('.reload, .mag_header').show();
     });
 }
 
