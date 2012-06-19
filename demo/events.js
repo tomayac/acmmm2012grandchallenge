@@ -14,14 +14,19 @@ var PAGE_COUNTER = 0;
 var htmlFactory = {
   // the container for an event
   event: function(eventId, title, start, image, source) {
-//    PAGE_COUNTER ++;    
+    //    PAGE_COUNTER ++;    
     var ago = humaneDate(start);
-    return  '<p class="mag-header"> ' + LOCATION_KEY + ' </p>'+
+    return  '<p class="mag-header">' + LOCATION_KEY + '</p>'+
             '<p class="event_title">' + title + '</p>' +
-            '<p><span class="event_details">' + ago + ' on ' + source + '</span></p>' +
+            '<p>' +
+              '<span class="event_details">' + ago + ' on ' + source +
+              '</span>' +
+            '</p>' +
             '<img class="event_tiny_image" src="' + image + '" />' +
-            '<p class="loading"><img src="spinner.gif"> ' +
-            'This magazine page is being prepared…</p>';
+            '<p class="loading">' +
+              '<img src="spinner.gif"> ' +
+              'This magazine page is being prepared…' +
+            '</p>';
           
   },
   // the individual images that illustrate an event
@@ -304,7 +309,8 @@ function retrieveFoursquareEventsResults(data, formattedAddress, lat, long) {
               getMediaItems(title, myVenue.name, myVenue.location.lat,
                   myVenue.location.long, eventId, eventHtml);
               // use the less exact search location
-              getMediaItems(title, commonLocation, lat, long, eventId, eventHtml);
+              getMediaItems(title, commonLocation, lat, long, eventId,
+                  eventHtml);
             }
           } else {
             console.log('Error: Getting Foursqaure events for the coordinates failed.');
@@ -526,7 +532,6 @@ function addPage(pageHtml) {
   return page;
 }
 
-
 function addPageContent(page, contentHtml) {
   var content = page.find('.content');
   content.find('.loading').hide();
@@ -534,7 +539,7 @@ function addPageContent(page, contentHtml) {
 }
 
 function addBackgroundImage(page, imageUrl) {
-  if(!page.data().background) {
+  if (!page.data().background) {
     page.data().background = imageUrl;
     page.prepend($('<div class="background">')
                     .append($('<img>').attr('src', imageUrl)));
@@ -548,7 +553,7 @@ function setTitlePage(location) {
       var image = data.responseData.results[0].url;
       $('.titlepage .background img').attr('src', image);
       $('.mag_city, .city').text(location);
-      for(var pageId in eventPages) {
+      for (var pageId in eventPages) {
         eventPages[pageId].find('.mag-header').text(location);
       }
       $('.controls').hide();
@@ -639,11 +644,11 @@ function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
     page.data('noMediaExistTimes', times);
     
     // remove the page from the flipbook
-    if(times == 2) {
+    if (times == 2) {
       // find the right pagenumber by looping through all pages (sigh…)
       var pages = $('#flipbook').data('pageObjs');
-      for(var pageNumber in pages) {
-        if(pages[pageNumber][0] === page[0]) {
+      for (var pageNumber in pages) {
+        if (pages[pageNumber][0] === page[0]) {
           $('#flipbook').turn('removePage', pageNumber);
           break;
         }
