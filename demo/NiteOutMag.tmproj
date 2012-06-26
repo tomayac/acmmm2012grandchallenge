@@ -3,20 +3,22 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>main.css</string>
+	<string>events.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
 			<key>filename</key>
 			<string>events.js</string>
 			<key>lastUsed</key>
-			<date>2012-06-19T08:42:51Z</date>
+			<date>2012-06-26T11:21:43Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>index.html</string>
 			<key>lastUsed</key>
-			<date>2012-06-19T08:43:18Z</date>
+			<date>2012-06-26T11:21:43Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -28,9 +30,7 @@
 			<key>filename</key>
 			<string>main.css</string>
 			<key>lastUsed</key>
-			<date>2012-06-19T08:43:18Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2012-06-26T11:20:09Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -48,28 +48,44 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>33</integer>
 				<key>line</key>
-				<integer>605</integer>
+				<integer>97</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>603</integer>
+			<integer>83</integer>
 		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>33</integer>
+				<integer>49</integer>
 				<key>line</key>
-				<integer>30</integer>
+				<integer>19</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>39</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>49</integer>
+				<key>line</key>
+				<integer>19</integer>
+			</dict>
 		</dict>
 		<key>levenshtein.js</key>
 		<dict>
@@ -141,6 +157,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{210, 70}, {1390, 1108}}</string>
+	<string>{{203, 59}, {1067, 719}}</string>
 </dict>
 </plist>

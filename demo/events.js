@@ -93,6 +93,10 @@ searchButton.addEventListener('click', function() {
 
 // creates the flipbook
 (function makeFlipbook() {
+  var magTitle = document.getElementById('mag_volume');
+  magTitle.innerHTML = 'Volume ' + new Date().getUTCMonth() + ', ' +
+      new Date().getUTCFullYear();
+  
   var flipbook = $('#flipbook');
   flipbook.turn({
     display: 'double',
