@@ -211,7 +211,7 @@ function sanitizeEventTitle(title) {
   // feat./ft. => featuring
   title = title.replace(/\bf(ea)?t\.\s+/gi, 'featuring ');  
   title = title.replace(
-      /[\.,\-–—―\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>]/g, ' ');
+      /[\.,\-–—―\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>·]/g, ' ');
   // replace characters that can stand for "and" or "at" by space
   title = title.replace(/[&\+@]/g, ' ');
   title = title.replace(/\s+/g, ' ');
@@ -338,8 +338,10 @@ function getUpcomingEvents(lat, long, query, formattedAddress) {
   var radius = '&radius=4';
   var format = '&format=json';
   var limit = '&per_page=10';
+  var categoryId = '&category_id=1,2,3,7,11';
   var date = '&quick_date=this_week';
-  url += apiKey + query + location + radius + format + limit + date;
+  url += apiKey + query + location + radius + format + limit + date +
+      categoryId;
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {

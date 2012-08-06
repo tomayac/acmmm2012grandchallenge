@@ -10,7 +10,7 @@
 			<key>filename</key>
 			<string>events.js</string>
 			<key>lastUsed</key>
-			<date>2012-06-26T11:21:43Z</date>
+			<date>2012-07-13T08:28:41Z</date>
 			<key>selected</key>
 			<true/>
 		</dict>
@@ -18,7 +18,7 @@
 			<key>filename</key>
 			<string>index.html</string>
 			<key>lastUsed</key>
-			<date>2012-06-26T11:21:43Z</date>
+			<date>2012-07-13T08:28:41Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -48,14 +48,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>33</integer>
+				<integer>59</integer>
 				<key>line</key>
-				<integer>97</integer>
+				<integer>213</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>83</integer>
+			<integer>195</integer>
 		</dict>
 		<key>index.html</key>
 		<dict>
@@ -157,6 +157,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{203, 59}, {1067, 719}}</string>
+	<string>{{203, 71}, {1067, 719}}</string>
 </dict>
 </plist>
