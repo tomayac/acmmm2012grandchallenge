@@ -14,7 +14,7 @@ var PAGE_COUNTER = 0;
 var htmlFactory = {
   // the container for an event
   event: function(eventId, title, start, image, source) {
-    //    PAGE_COUNTER ++;    
+    //    PAGE_COUNTER ++;
     var ago = humaneDate(start);
     return  '<p class="mag-header">' + LOCATION_KEY + '</p>'+
             '<p class="event_title">' + title + '</p>' +
@@ -27,7 +27,7 @@ var htmlFactory = {
               '<img src="spinner.gif"> ' +
               'This magazine page is being prepared…' +
             '</p>';
-          
+
   },
   // the individual images that illustrate an event
   media: function(mediaurl, description, storyurl) {
@@ -49,10 +49,10 @@ var htmlFactory = {
              (storyurl? '<a href="' + storyurl + '" target="_blank">' : '') +
              '<img class="event_media_' + float + '" ' +
              'onerror="javascript:this.parentNode.removeChild(this);" ' +
-             'src="' + mediaurl +'" />'+               
+             'src="' + mediaurl +'" />'+
              (storyurl? '</a>' : '') +
              '<div class="event_description">' + description + '</div>' +
-           '</div>';   
+           '</div>';
   }
 };
 
@@ -94,9 +94,9 @@ searchButton.addEventListener('click', function() {
 // creates the flipbook
 (function makeFlipbook() {
   var magTitle = document.getElementById('mag_volume');
-  magTitle.innerHTML = 'Volume ' + new Date().getUTCMonth() + ', ' +
+  magTitle.innerHTML = 'Volume ' + (new Date().getUTCMonth() + 1) + ', ' +
       new Date().getUTCFullYear();
-  
+
   var flipbook = $('#flipbook');
   flipbook.turn({
     display: 'double',
@@ -118,7 +118,7 @@ searchButton.addEventListener('click', function() {
     }
   });
 })();
-  
+
 // helper function needed to create unique IDs
 function createRandomId() {
   var text = '';
@@ -173,7 +173,7 @@ function geocode(location) {
 // gets events for a lat/long pair from different event sources
 function retrieveGeocodeResults(data) {
   searchButton.style.display = 'inline';
-  
+
   if (data.results && data.results.length > 0) {
     var location = data.results[0];
     var coords = location.geometry.location;
@@ -197,7 +197,7 @@ function sanitizeEventTitle(title) {
   var tmp = document.createElement('div');
   tmp.innerHTML = title;
   title = tmp.textContent;
-  
+
   // remove punctuation and weird characters
   title = title.replace('&nbsp;', ' ');
   title = title.replace('&quot;', ' ');
@@ -205,11 +205,11 @@ function sanitizeEventTitle(title) {
   title = title.replace('&amp;', ' ');
   title = title.replace('&gt;', ' ');
   title = title.replace('&lt;', ' ');
-  
+
   // w/ => with
   title = title.replace(/\bw\/\s+/gi, 'with ');
   // feat./ft. => featuring
-  title = title.replace(/\bf(ea)?t\.\s+/gi, 'featuring ');  
+  title = title.replace(/\bf(ea)?t\.\s+/gi, 'featuring ');
   title = title.replace(
       /[\.,\-–—―\?¿\/\\#!$€%\^\*;:{}=_`´'"~()®™\[\]“”…°<>·]/g, ' ');
   // replace characters that can stand for "and" or "at" by space
@@ -358,7 +358,7 @@ function getUpcomingEvents(lat, long, query, formattedAddress) {
   xhr.send();
   requestSent();
 }
-  
+
 // retrieves events from Upcoming
 function retrieveUpcomingEventsResults(data, formattedAddress, lat, long) {
   if (!data.rsp) {
@@ -456,7 +456,7 @@ function retrieveEventfulEventsResults(data, formattedAddress, lat, long) {
     // use the less exact search location
     getMediaItems(title, commonLocation, lat, long, eventId,
         eventHtml);
-        
+
   }
 
 
@@ -587,7 +587,7 @@ function retrieveTeleportdMediaItemsResults(data, eventId, eventHtml) {
 // gets media items from our node.js Media Server that match a given event
 // title and sanitized location name
 function getNodeMediaItems(title, commonLocation, eventId, eventHtml) {
-  var url = 'http://media.no.de/search/combined/';
+  var url = 'http://localhost:8001/search/combined/';
   url += encodeURIComponent(title + ' ' + commonLocation);
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
@@ -627,13 +627,13 @@ function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
           if ((!eventMediaItems[eventId][mediaItem.mediaurl]) &&
               // TODO: very lame way to remove spammy messages with just too
               // much characters
-              (mediaItem.message.clean.length <= 500)) {
+              (mediaItem.micropost.plainText.length <= 500)) {
             html += htmlFactory.media(
-                mediaItem.mediaurl,
-                mediaItem.message.clean,
-                mediaItem.storyurl);
-            eventMediaItems[eventId][mediaItem.mediaurl] = true;
-            addBackgroundImage(eventPages[eventId], mediaItem.mediaurl);
+                mediaItem.mediaUrl,
+                mediaItem.micropost.plainText,
+                mediaItem.micropostUrl);
+            eventMediaItems[eventId][mediaItem.mediaUrl] = true;
+            addBackgroundImage(eventPages[eventId], mediaItem.mediaUrl);
           }
         }
       });
@@ -648,7 +648,7 @@ function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
     var times = page.data('noMediaExistTimes') || 0;
     times++;
     page.data('noMediaExistTimes', times);
-    
+
     // remove the page from the flipbook
     if (times == 2) {
       // find the right pagenumber by looping through all pages (sigh…)
@@ -665,5 +665,5 @@ function retrieveNodeMediaItemsResults(data, eventId, eventHtml) {
 
 // TODO: deduplicate media items
 function deduplicteMediaItems() {
-  
+
 }
